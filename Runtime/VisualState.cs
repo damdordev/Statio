@@ -7,10 +7,11 @@ namespace Damdor.VisualStates
     public class VisualState : MonoBehaviour, IVariableStorageSource
     {
         public VariableStorage.VariableStorage Storage => storage;
-        public IReadOnlyList<string> States => states.States;
+        public IReadOnlyList<string> States => states;
 
-        [SerializeField] private VisualStatesList states;
+        [SerializeField] private List<string> states;
         [SerializeField] private VariableStorage.VariableStorage storage;
+        [SerializeReference] private List<VisualStateParameter> parameters;
 
         public void ChangeState(string state)
         {
