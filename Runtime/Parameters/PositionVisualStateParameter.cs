@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Damdor.VisualStates
 {
+    [VisualParameterTypeName("Transform/Position")]
     public class PositionVisualStateParameter : Vector3VisualStateParameter<Transform>
     {
         [SerializeField] private StorageValue<bool> local;

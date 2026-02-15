@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -7,6 +11,8 @@ namespace Damdor.VisualStates.Editor
     [CustomEditor(typeof(VisualState), true)]
     public class VisualStateEditor : UnityEditor.Editor
     {
+        private readonly Dictionary<Type, string> variableTypeToName = new();
+        
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
@@ -70,7 +76,7 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.onReorderCallbackWithDetails += (l, oldIndex, newIndex) =>
             {
-                Debug.LogError($"{oldIndex} > {newIndex}");
+            Debug.LogError($"{oldIndex} > {newIndex}");
             };
             
             return reorderableList;
@@ -102,10 +108,22 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.onAddDropdownCallback += (rect, _) =>
             {
-                var newIndex = property.arraySize;
-                property.InsertArrayElementAtIndex(newIndex);
-                property.GetArrayElementAtIndex(newIndex).managedReferenceValue = new PositionVisualStateParameter();
-                property.serializedObject.ApplyModifiedProperties();
+                var types = VisualStateSettings.SupportedParameterTypes.OrderBy(GetTypeName).ToList();
+                var variables = types.Select(GetTypeName).ToArray();
+                new StringDropdown(variables, newChoice =>
+                {
+                    property.InsertArrayElementAtIndex(property.arraySize);
+                    var element = property.GetArrayElementAtIndex(property.arraySize - 1);
+                    var index = Array.FindIndex(variables, v => v == newChoice);
+                    var type = types[index];
+                    element.managedReferenceValue = Activator.CreateInstance(type);
+                    property.serializedObject.ApplyModifiedProperties();
+                }).Show(new Rect(rect.x - 100, rect.y, rect.width, rect.height));
+                
+                // var newIndex = property.arraySize;
+                // property.InsertArrayElementAtIndex(newIndex);
+                // property.GetArrayElementAtIndex(newIndex).managedReferenceValue = new PositionVisualStateParameter();
+                // property.serializedObject.ApplyModifiedProperties();
             };
             
             return reorderableList;
@@ -126,7 +144,18 @@ namespace Damdor.VisualStates.Editor
             }
 
             return false;
-        }        
+        }
 
+        private string GetTypeName(Type type)
+        {
+            if(variableTypeToName.TryGetValue(type, out var result)) return result;
+
+            var attr = type.GetCustomAttribute<VisualParameterTypeName>();
+            var name = attr != null ? attr.Name : type.Name;
+            variableTypeToName[type] = name;
+
+            return name;
+        }
+        
     }
 }
