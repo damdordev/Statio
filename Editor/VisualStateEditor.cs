@@ -12,6 +12,7 @@ namespace Damdor.VisualStates.Editor
     public class VisualStateEditor : UnityEditor.Editor
     {
         private readonly Dictionary<Type, string> variableTypeToName = new();
+        private readonly Dictionary<string, ReorderableList> propertyPathToReorderableList = new();
         
         public override void OnInspectorGUI()
         {
@@ -21,9 +22,16 @@ namespace Damdor.VisualStates.Editor
             var storageProperty = serializedObject.FindProperty("storage");
             var parametersProperty = serializedObject.FindProperty("parameters");
 
-            var statesList = CreateStatesReorderableList(statesProperty);
-            var parametersList = CreateParametersReorderableList(parametersProperty);
-            
+            if(!propertyPathToReorderableList.TryGetValue(statesProperty.propertyPath, out var statesList))
+            {
+                statesList = CreateStatesReorderableList(statesProperty);
+            }
+
+            if (!propertyPathToReorderableList.TryGetValue(parametersProperty.propertyPath, out var parametersList))
+            {
+                parametersList = CreateParametersReorderableList(parametersProperty);
+            }
+
             EditorGUILayout.BeginVertical();
             statesList.DoLayoutList();
             EditorGUILayout.PropertyField(storageProperty);
@@ -78,7 +86,8 @@ namespace Damdor.VisualStates.Editor
             {
             Debug.LogError($"{oldIndex} > {newIndex}");
             };
-            
+
+            propertyPathToReorderableList[property.propertyPath] = reorderableList;
             return reorderableList;
         }
         
@@ -100,7 +109,11 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.drawElementCallback += (rect, index, _, _) =>
             {
-                EditorGUI.PropertyField(rect, property.GetArrayElementAtIndex(index), true);
+                EditorGUI.PropertyField(
+                    new Rect(rect.x + 10f, rect.y, rect.width - 10f, rect.height),
+                    property.GetArrayElementAtIndex(index),
+                    true
+                );
             };
             
             reorderableList.elementHeightCallback += index 
@@ -120,6 +133,8 @@ namespace Damdor.VisualStates.Editor
                     property.serializedObject.ApplyModifiedProperties();
                 }).Show(new Rect(rect.x - 300, rect.y, rect.width + 300, rect.height));
             };
+            
+            propertyPathToReorderableList[property.propertyPath] = reorderableList;
             
             return reorderableList;
         }
