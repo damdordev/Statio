@@ -118,12 +118,7 @@ namespace Damdor.VisualStates.Editor
                     var type = types[index];
                     element.managedReferenceValue = Activator.CreateInstance(type);
                     property.serializedObject.ApplyModifiedProperties();
-                }).Show(new Rect(rect.x - 100, rect.y, rect.width, rect.height));
-                
-                // var newIndex = property.arraySize;
-                // property.InsertArrayElementAtIndex(newIndex);
-                // property.GetArrayElementAtIndex(newIndex).managedReferenceValue = new PositionVisualStateParameter();
-                // property.serializedObject.ApplyModifiedProperties();
+                }).Show(new Rect(rect.x - 300, rect.y, rect.width + 300, rect.height));
             };
             
             return reorderableList;
