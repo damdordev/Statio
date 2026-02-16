@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -11,7 +10,6 @@ namespace Damdor.VisualStates.Editor
     [CustomEditor(typeof(VisualState), true)]
     public class VisualStateEditor : UnityEditor.Editor
     {
-        private readonly Dictionary<Type, string> variableTypeToName = new();
         private readonly Dictionary<string, ReorderableList> propertyPathToReorderableList = new();
         
         public override void OnInspectorGUI()
@@ -64,7 +62,7 @@ namespace Damdor.VisualStates.Editor
                 var newValue = EditorGUI.DelayedTextField(rect, oldValue);
                 if (oldValue == newValue) return;
                 
-                if (!HasState(property, newValue))
+                if (!VisualStateEditorHelper.HasState(property, newValue))
                 {
                     elementProperty.stringValue = newValue;
                     property.serializedObject.ApplyModifiedProperties();
@@ -78,7 +76,7 @@ namespace Damdor.VisualStates.Editor
             {
                 var newIndex = property.arraySize;
                 property.InsertArrayElementAtIndex(newIndex);
-                property.GetArrayElementAtIndex(newIndex).stringValue = GetNewStateName(property);
+                property.GetArrayElementAtIndex(newIndex).stringValue = VisualStateEditorHelper.GetNewStateName(property);
                 property.serializedObject.ApplyModifiedProperties();
             };
 
@@ -121,8 +119,8 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.onAddDropdownCallback += (rect, _) =>
             {
-                var types = VisualStateSettings.SupportedParameterTypes.OrderBy(GetTypeName).ToList();
-                var variables = types.Select(GetTypeName).ToArray();
+                var types = VisualStateSettings.SupportedParameterTypes.OrderBy(VisualStateEditorHelper.GetParameterTypeName).ToList();
+                var variables = types.Select(VisualStateEditorHelper.GetParameterTypeName).ToArray();
                 new StringDropdown(variables, newChoice =>
                 {
                     property.InsertArrayElementAtIndex(property.arraySize);
@@ -137,34 +135,6 @@ namespace Damdor.VisualStates.Editor
             propertyPathToReorderableList[property.propertyPath] = reorderableList;
             
             return reorderableList;
-        }
-        
-        private static string GetNewStateName(SerializedProperty property)
-        {
-            var name = 1;
-            while (HasState(property, name.ToString())) ++name;
-            return name.ToString();
-        }
-
-        private static bool HasState(SerializedProperty property, string state)
-        {
-            for (var i = 0; i < property.arraySize; i++)
-            {
-                if (property.GetArrayElementAtIndex(i).stringValue == state) return true;
-            }
-
-            return false;
-        }
-
-        private string GetTypeName(Type type)
-        {
-            if(variableTypeToName.TryGetValue(type, out var result)) return result;
-
-            var attr = type.GetCustomAttribute<VisualParameterTypeName>();
-            var name = attr != null ? attr.Name : type.Name;
-            variableTypeToName[type] = name;
-
-            return name;
         }
         
     }

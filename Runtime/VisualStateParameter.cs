@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Damdor.VariableStorage;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -20,7 +21,7 @@ namespace Damdor.VisualStates
         where TComponent : Object
     {
         [SerializeField] private TComponent target;
-        [SerializeField] private TValue defaultValue;
+        [SerializeField] private StorageValue<TValue> defaultValue;
         [SerializeField] private List<VisualStateParameterValue<TValue>> values;
 
         private TValue snapshot;
@@ -32,7 +33,7 @@ namespace Damdor.VisualStates
 
         public override void LoadDefaultValue()
         {
-            SetValue(target, defaultValue);
+            SetValue(target, defaultValue.Value);
         }
 
         public override void LoadValue(int stateId, float percentFromSnapshot)
@@ -52,10 +53,10 @@ namespace Damdor.VisualStates
         {
             foreach (var value in values)
             {
-                if (value.stateId == stateId) return value.value;
+                if (value.stateId == stateId) return value.value.Value;
             }
 
-            return defaultValue;
+            return defaultValue.Value;
         }
 
     }
@@ -64,6 +65,6 @@ namespace Damdor.VisualStates
     public struct VisualStateParameterValue<TValue>
     {
         public int stateId;
-        public TValue value;
+        public StorageValue<TValue> value;
     }
 }

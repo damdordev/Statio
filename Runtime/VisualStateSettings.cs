@@ -34,6 +34,7 @@ namespace Damdor.VisualStates
             
             supportedParameterTypes.Add(typeof(PositionVisualStateParameter));
             supportedParameterTypes.Add(typeof(ScaleVisualStateParameter));
+            supportedParameterTypes.Add(typeof(ImageColorVisualStateParameter));
         }
         
         private static void EnsureInit()
