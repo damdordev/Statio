@@ -12,7 +12,8 @@ namespace Damdor.VisualStates
         public abstract void LoadValue(int stateId, float percentFromSnapshot);
         public abstract void LoadDefaultValue();
         public abstract void MakeSnapshot();
-        
+
+        internal abstract void NotifyStateRemoved(int stateIndex);
         public abstract void NotifyStateChanged(int oldIndex, int newIndex);
     }
 
@@ -57,6 +58,23 @@ namespace Damdor.VisualStates
             }
 
             return defaultValue.Value;
+        }
+
+        internal override void NotifyStateRemoved(int stateId)
+        {
+            values.RemoveAll(v => v.stateId == stateId);
+            for (var index = 0; index < values.Count; index++)
+            {
+                var visualStateParameterValue = values[index];
+                if (visualStateParameterValue.stateId > stateId)
+                {
+                    values[index] = new VisualStateParameterValue<TValue>()
+                    {
+                        stateId = visualStateParameterValue.stateId - 1,
+                        value = visualStateParameterValue.value
+                    };
+                }
+            }
         }
 
     }

@@ -11,11 +11,13 @@ namespace Damdor.VisualStates.Editor
     public class VisualStateEditor : UnityEditor.Editor
     {
         private readonly Dictionary<string, ReorderableList> propertyPathToReorderableList = new();
+        private VisualState state;
         
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
+            state = serializedObject.targetObject as VisualState;
             var statesProperty = serializedObject.FindProperty("states");
             var storageProperty = serializedObject.FindProperty("storage");
             var parametersProperty = serializedObject.FindProperty("parameters");
@@ -83,6 +85,15 @@ namespace Damdor.VisualStates.Editor
             reorderableList.onReorderCallbackWithDetails += (l, oldIndex, newIndex) =>
             {
             Debug.LogError($"{oldIndex} > {newIndex}");
+            };
+
+            reorderableList.onRemoveCallback += l =>
+            {
+                Undo.RecordObject(property.serializedObject.targetObject, $"Remove state");
+                state.RemoveState(state.States[l.index]);
+                EditorUtility.SetDirty(property.serializedObject.targetObject);
+                property.serializedObject.Update();
+                property.serializedObject.ApplyModifiedProperties();
             };
 
             propertyPathToReorderableList[property.propertyPath] = reorderableList;
