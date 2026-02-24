@@ -28,6 +28,11 @@ namespace Damdor.VisualStates
             states.RemoveAt(oldIndex);
             foreach (var parameter in parameters) parameter.NotifyStateChanged(oldIndex, newIndex);
         }
+
+        public void AddParameter<TComponent, TValue>(VisualStateParameter<TComponent, TValue> parameter)
+            where TComponent : Object
+        {
+        }
         
         public void ChangeState(string state)
         {
