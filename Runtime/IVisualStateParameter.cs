@@ -77,9 +77,9 @@ namespace Damdor.VisualStates
     /// Interface for a visual state parameter that handles types requiring custom serialization (e.g., non-serializable runtime types).
     /// </summary>
     /// <typeparam name="TComponent">The type of the Unity Object (Component) being controlled.</typeparam>
-    /// <typeparam name="TSerializedValue">The serializable representation of the value.</typeparam>
     /// <typeparam name="TValue">The runtime type of the value being applied.</typeparam>
-    public interface IVisualStateParameter<TComponent, TSerializedValue, TValue>
+    /// <typeparam name="TSerializedValue">The serializable representation of the value.</typeparam>
+    public interface IVisualStateParameter<TComponent, TValue, TSerializedValue>
         where TComponent : Object
     {
         /// <summary>
@@ -105,7 +105,7 @@ namespace Damdor.VisualStates
         /// </summary>
         /// <param name="stateId">The unique identifier of the state.</param>
         /// <returns>The configured value for the state.</returns>
-        StorageValue<TSerializedValue, TValue> GetValue(int stateId);
+        StorageValue<TValue, TSerializedValue> GetValue(int stateId);
         
         /// <summary>
         /// Checks if a specific override exists for the given state ID.

@@ -32,6 +32,13 @@ namespace Damdor.VisualStates
         public void AddParameter<TComponent, TValue>(VisualStateParameter<TComponent, TValue> parameter)
             where TComponent : Object
         {
+            parameters.Add(parameter);
+        }
+        
+        public void AddParameter<TComponent, TValue, TSerializedValue>(VisualStateParameter<TComponent, TSerializedValue, TValue> parameter)
+            where TComponent : Object
+        {
+            parameters.Add(parameter);
         }
         
         public void ChangeState(string state)
