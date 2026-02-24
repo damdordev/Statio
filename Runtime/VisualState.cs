@@ -26,6 +26,7 @@ namespace Damdor.VisualStates
             var oldIndex = states.IndexOf(state);
             if (oldIndex == -1) return;
             states.RemoveAt(oldIndex);
+            states.Insert(newIndex, state);
             foreach (var parameter in parameters) parameter.NotifyStateChanged(oldIndex, newIndex);
         }
 
