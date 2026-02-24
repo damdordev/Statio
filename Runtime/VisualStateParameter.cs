@@ -177,11 +177,13 @@ namespace Damdor.VisualStates
 
         private TComponent ResolveTarget()
         {
+            if (storage == null) return target.Value;
             return storage.Evaluate(target, parentStorage); 
         }
 
         private TValue ResolveValue(StorageValue<TValue> storageValue)
         {
+            if (storage == null) return storageValue.Value;
             return storage.Evaluate(storageValue, parentStorage);
         }
     }
