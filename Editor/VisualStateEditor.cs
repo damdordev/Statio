@@ -84,7 +84,12 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.onReorderCallbackWithDetails += (l, oldIndex, newIndex) =>
             {
-            Debug.LogError($"{oldIndex} > {newIndex}");
+                Undo.RecordObject(property.serializedObject.targetObject, $"Reorder state");
+                state.ChangeStateIndex(state.States[oldIndex], newIndex);
+                EditorUtility.SetDirty(property.serializedObject.targetObject);
+                property.serializedObject.Update();
+                property.serializedObject.ApplyModifiedProperties();
+                property.serializedObject.ApplyModifiedProperties();
             };
 
             reorderableList.onRemoveCallback += l =>

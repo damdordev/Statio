@@ -11,7 +11,7 @@ namespace Damdor.VisualStates
 
         [SerializeField] private List<string> states;
         [SerializeField] private VariableStorage.VariableStorage storage;
-        [SerializeReference] private List<VisualStateParameter> parameters;
+        [SerializeReference] private List<IVisualStateParameterLifecycle> parameters;
 
         public void RemoveState(string state)
         {
@@ -19,6 +19,14 @@ namespace Damdor.VisualStates
             if (stateIndex == -1) return;
             states.RemoveAt(stateIndex);
             foreach (var parameter in parameters) parameter.NotifyStateRemoved(stateIndex);
+        }
+
+        public void ChangeStateIndex(string state, int newIndex)
+        {
+            var oldIndex = states.IndexOf(state);
+            if (oldIndex == -1) return;
+            states.RemoveAt(oldIndex);
+            foreach (var parameter in parameters) parameter.NotifyStateChanged(oldIndex, newIndex);
         }
         
         public void ChangeState(string state)

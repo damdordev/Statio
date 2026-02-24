@@ -6,77 +6,15 @@ using Object = UnityEngine.Object;
 
 namespace Damdor.VisualStates
 {
-    [Serializable]
-    public abstract class VisualStateParameter
-    {
-        public abstract void LoadValue(int stateId, float percentFromSnapshot);
-        public abstract void LoadDefaultValue();
-        public abstract void MakeSnapshot();
-
-        internal abstract void NotifyStateRemoved(int stateIndex);
-        public abstract void NotifyStateChanged(int oldIndex, int newIndex);
-    }
-
-    [Serializable]
-    public abstract class VisualStateParameter<TComponent, TValue> : VisualStateParameter
+    [Serializable] 
+    public abstract class VisualStateParameter<TComponent, TValue> : IVisualStateParameterLifecycle, IVisualStateParameter<TComponent, TValue>
         where TComponent : Object
     {
-        [SerializeField] private TComponent target;
+        [SerializeField] private StorageValue<TComponent> target;
         [SerializeField] private StorageValue<TValue> defaultValue;
         [SerializeField] private List<VisualStateParameterValue<TValue>> values;
 
         private TValue snapshot;
-
-        public override void MakeSnapshot()
-        {
-            snapshot = GetValue(target);
-        }
-
-        public override void LoadDefaultValue()
-        {
-            SetValue(target, defaultValue.Value);
-        }
-
-        public override void LoadValue(int stateId, float percentFromSnapshot)
-        {
-            SetValue(target, Lerp(snapshot, GetValueForState(stateId), percentFromSnapshot));
-        }
-
-        public override void NotifyStateChanged(int oldIndex, int newIndex)
-        {
-        }
-
-        protected abstract TValue GetValue(TComponent target);
-        protected abstract void SetValue(TComponent target, TValue value);
-        protected abstract TValue Lerp(TValue a, TValue b, float t);
-
-        private TValue GetValueForState(int stateId)
-        {
-            foreach (var value in values)
-            {
-                if (value.stateId == stateId) return value.value.Value;
-            }
-
-            return defaultValue.Value;
-        }
-
-        internal override void NotifyStateRemoved(int stateId)
-        {
-            values.RemoveAll(v => v.stateId == stateId);
-            for (var index = 0; index < values.Count; index++)
-            {
-                var visualStateParameterValue = values[index];
-                if (visualStateParameterValue.stateId > stateId)
-                {
-                    values[index] = new VisualStateParameterValue<TValue>()
-                    {
-                        stateId = visualStateParameterValue.stateId - 1,
-                        value = visualStateParameterValue.value
-                    };
-                }
-            }
-        }
-
     }
 
     [Serializable]
