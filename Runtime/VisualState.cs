@@ -10,13 +10,15 @@ namespace Damdor.VisualStates
     {
         public VariableStorage.VariableStorage Storage => storage;
         public IReadOnlyList<string> States => states;
-        public string CurrentState => currentState >= 0 && currentState < states.Count ? states[currentState] : "";
+        public string CurrentState => currentStateId >= 0 && currentStateId < states.Count ? states[currentStateId] : "";
         
         [SerializeField] private List<string> states;
         [SerializeField] private VariableStorage.VariableStorage storage;
         [SerializeReference] private List<IVisualStateParameterLifecycle> parameters;
+        [SerializeField] private int initialStateId = -1;
 
-        private int currentState = -1;
+        private int currentStateId = -1;
+        private int stateIdToSetAfterEnable = -1;
         
         public void RemoveState(string state)
         {
@@ -30,6 +32,7 @@ namespace Damdor.VisualStates
         {
             var oldIndex = states.IndexOf(state);
             if (oldIndex == -1) return;
+
             states.RemoveAt(oldIndex);
             states.Insert(newIndex, state);
             foreach (var parameter in parameters) parameter.NotifyStateChanged(oldIndex, newIndex);
@@ -49,30 +52,56 @@ namespace Damdor.VisualStates
         
         public void ChangeState(string state)
         {
-            ChangeStateImmediately(state);
+            ChangeState(states.IndexOf(state));
         }
 
-        public void ChangeStateImmediately(string state)
+        private void ChangeState(int newStateId)
         {
-            var newStateId = states.IndexOf(state);
-            if (newStateId == currentState) return;
-            currentState = newStateId;
+            AssignStoragesToParameters();
             
-            foreach (var parameter in parameters)
+            if (newStateId == -1)
             {
-                parameter.LoadValue(newStateId);
+                // TODO: error
+                return;
+            }
+            if (newStateId == currentStateId) return;
+
+            if (isActiveAndEnabled)
+            {
+                currentStateId = newStateId;
+            
+                foreach (var parameter in parameters)
+                {
+                    parameter.LoadValue(newStateId);
+                }
+            }
+            else
+            {
+                stateIdToSetAfterEnable = newStateId;
             }
         }
 
         protected virtual void Awake()
         {
-            AssignStoragesToParameters();
+            if (currentStateId == -1 && initialStateId != -1)
+            {
+                ChangeState(initialStateId);
+            }
         }
 
         protected virtual void OnValidate()
         {
             if (string.IsNullOrEmpty(gameObject.scene.path)) return;
             AssignStoragesToParameters();
+        }
+
+        protected void OnEnable()
+        {
+            if (stateIdToSetAfterEnable == -1) return;
+            
+            var tmp = stateIdToSetAfterEnable;
+            stateIdToSetAfterEnable = -1;
+            ChangeState(tmp);
         }
 
         private void AssignStoragesToParameters()

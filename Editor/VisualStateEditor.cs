@@ -23,6 +23,7 @@ namespace Damdor.VisualStates.Editor
             var statesProperty = serializedObject.FindProperty("states");
             var storageProperty = serializedObject.FindProperty("storage");
             var parametersProperty = serializedObject.FindProperty("parameters");
+            var initialStateProperty = serializedObject.FindProperty("initialStateId");
 
             if(!propertyPathToReorderableList.TryGetValue(statesProperty.propertyPath, out var statesList))
             {
@@ -56,7 +57,7 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.drawHeaderCallback += rect =>
             {
-                EditorGUI.LabelField(rect, "States");
+                EditorGUI.LabelField( rect, "States");
             };
 
             reorderableList.drawElementCallback += (rect, index, _, _) =>
