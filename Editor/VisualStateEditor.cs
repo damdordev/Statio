@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Damdor.Foundation.Editor;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Damdor.VisualStates.Editor
 {
@@ -29,6 +31,30 @@ namespace Damdor.VisualStates.Editor
             {
                 statesList = CreateStatesReorderableList(statesProperty);
             }
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Initial state", GUILayout.ExpandWidth(false), GUILayout.Width(100));
+
+            var initialStateText = string.IsNullOrEmpty(state.InitialState) ? "-----" : state.InitialState;
+            if (GUILayout.Button(initialStateText, GUILayout.ExpandWidth(false), GUILayout.Width(100)))
+            {
+                var allStates = new List<string>();
+                allStates.Add("-----");
+                allStates.AddRange(state.States);
+
+                var rect = GUILayoutUtility.GetLastRect();
+                rect.x += 100f;
+                new HierarchicalDropdown<string>(allStates, s => s, newInitialState =>
+                {
+                    Undo.RecordObject(serializedObject.targetObject, "Change initial state");
+                    state.InitialState = newInitialState;
+                    EditorUtility.SetDirty(serializedObject.targetObject);
+                    serializedObject.Update();
+                    serializedObject.ApplyModifiedProperties();
+                }).Show(rect);
+            }
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
 
             if (!propertyPathToReorderableList.TryGetValue(parametersProperty.propertyPath, out var parametersList))
             {
@@ -104,7 +130,6 @@ namespace Damdor.VisualStates.Editor
                 EditorUtility.SetDirty(property.serializedObject.targetObject);
                 property.serializedObject.Update();
                 property.serializedObject.ApplyModifiedProperties();
-                property.serializedObject.ApplyModifiedProperties();
             };
 
             reorderableList.onRemoveCallback += l =>
@@ -151,13 +176,10 @@ namespace Damdor.VisualStates.Editor
             reorderableList.onAddDropdownCallback += (rect, _) =>
             {
                 var types = VisualStateSettings.SupportedParameterTypes.OrderBy(VisualStateEditorHelper.GetParameterTypeName).ToList();
-                var variables = types.Select(VisualStateEditorHelper.GetParameterTypeName).ToArray();
-                new StringDropdown(variables, newChoice =>
+                new HierarchicalDropdown<Type>(types, VisualStateEditorHelper.GetParameterTypeName, type =>
                 {
                     property.InsertArrayElementAtIndex(property.arraySize);
                     var element = property.GetArrayElementAtIndex(property.arraySize - 1);
-                    var index = Array.FindIndex(variables, v => v == newChoice);
-                    var type = types[index];
                     element.managedReferenceValue = Activator.CreateInstance(type);
                     property.serializedObject.ApplyModifiedProperties();
                 }).Show(new Rect(rect.x - 300, rect.y, rect.width + 300, rect.height));

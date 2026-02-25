@@ -11,6 +11,12 @@ namespace Damdor.VisualStates
         public VariableStorage.VariableStorage Storage => storage;
         public IReadOnlyList<string> States => states;
         public string CurrentState => currentStateId >= 0 && currentStateId < states.Count ? states[currentStateId] : "";
+
+        public string InitialState
+        {
+            get => initialStateId >= 0 && initialStateId < states.Count ? states[initialStateId] : "";
+            set => initialStateId = states.IndexOf(value);
+        }
         
         [SerializeField] private List<string> states;
         [SerializeField] private VariableStorage.VariableStorage storage;
@@ -19,6 +25,11 @@ namespace Damdor.VisualStates
 
         private int currentStateId = -1;
         private int stateIdToSetAfterEnable = -1;
+
+        public void AddState(string state)
+        {
+            states.Add(state);
+        }
         
         public void RemoveState(string state)
         {
