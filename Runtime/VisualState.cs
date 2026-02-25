@@ -10,13 +10,13 @@ namespace Damdor.VisualStates
     {
         public VariableStorage.VariableStorage Storage => storage;
         public IReadOnlyList<string> States => states;
-        public string CurrentState => states[currentState];
-
+        public string CurrentState => currentState >= 0 && currentState < states.Count ? states[currentState] : "";
+        
         [SerializeField] private List<string> states;
         [SerializeField] private VariableStorage.VariableStorage storage;
         [SerializeReference] private List<IVisualStateParameterLifecycle> parameters;
 
-        private int currentState;
+        private int currentState = -1;
         
         public void RemoveState(string state)
         {

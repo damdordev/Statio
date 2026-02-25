@@ -10,7 +10,7 @@ namespace Damdor.VisualStates.Editor
     [CustomEditor(typeof(VisualState), true)]
     public class VisualStateEditor : UnityEditor.Editor
     {
-        private const float GoToStateButtonWidth = 100f;
+        private const float GoToStateButtonWidth = 50f;
         
         private readonly Dictionary<string, ReorderableList> propertyPathToReorderableList = new();
         private VisualState state;
@@ -64,7 +64,7 @@ namespace Damdor.VisualStates.Editor
                 var elementProperty = property.GetArrayElementAtIndex(index);
                 var buttonClicked = GUI.Button(
                     new Rect(rect.x + rect.width - GoToStateButtonWidth, rect.y, GoToStateButtonWidth, rect.height),
-                    "Change"
+                    state.CurrentState == elementProperty.stringValue ? "x" : ""
                 );
                 if (buttonClicked)
                 {
