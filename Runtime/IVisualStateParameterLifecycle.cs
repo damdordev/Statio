@@ -3,7 +3,7 @@ namespace Damdor.VisualStates
     /// <summary>
     /// Defines the lifecycle methods for a visual state parameter, handling value application, snapshots, and state management.
     /// </summary>
-    internal interface IVisualStateParameterLifecycle
+    public interface IVisualStateParameterLifecycle
     {
         /// <summary>
         /// Gets or sets the primary variable storage used for resolving values.
