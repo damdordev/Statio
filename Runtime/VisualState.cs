@@ -33,20 +33,27 @@ namespace Damdor.VisualStates
         
         public void RemoveState(string state)
         {
-            var stateIndex = states.IndexOf(state);
-            if (stateIndex == -1) return;
-            states.RemoveAt(stateIndex);
-            foreach (var parameter in parameters) parameter.NotifyStateRemoved(stateIndex);
+            var stateId = states.IndexOf(state);
+            if (stateId == -1) return;
+            states.RemoveAt(stateId);
+            
+            foreach (var parameter in parameters) parameter.NotifyStateRemoved(stateId);
+            if (initialStateId == stateId) initialStateId = -1;
+            else if (initialStateId > stateId) --initialStateId;
         }
 
-        public void ChangeStateIndex(string state, int newIndex)
+        public void ChangeStateIndex(string state, int newStateId)
         {
-            var oldIndex = states.IndexOf(state);
-            if (oldIndex == -1) return;
+            var oldStateId = states.IndexOf(state);
+            if (oldStateId == -1) return;
 
-            states.RemoveAt(oldIndex);
-            states.Insert(newIndex, state);
-            foreach (var parameter in parameters) parameter.NotifyStateChanged(oldIndex, newIndex);
+            states.RemoveAt(oldStateId);
+            states.Insert(newStateId, state);
+            
+            foreach (var parameter in parameters) parameter.NotifyStateChanged(oldStateId, newStateId);
+            if (initialStateId == oldStateId) initialStateId = newStateId;
+            else if(oldStateId < initialStateId && newStateId >= initialStateId) --initialStateId;
+            else if(oldStateId >= initialStateId && newStateId <= initialStateId) ++initialStateId;
         }
 
         public void AddParameter<TComponent, TValue>(VisualStateParameter<TComponent, TValue> parameter)
