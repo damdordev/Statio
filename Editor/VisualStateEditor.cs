@@ -16,7 +16,19 @@ namespace Damdor.VisualStates.Editor
         
         private readonly Dictionary<string, ReorderableList> propertyPathToReorderableList = new();
         private VisualState state;
-        
+        private float lastTime;
+
+        private void OnEnable()
+        {
+            lastTime = -1f;
+            EditorApplication.update += EditorUpdate;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.update -= EditorUpdate;
+        }
+
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
@@ -189,6 +201,22 @@ namespace Damdor.VisualStates.Editor
             propertyPathToReorderableList[property.propertyPath] = reorderableList;
             
             return reorderableList;
+        }
+        
+        private void EditorUpdate()
+        {
+            if (Application.isPlaying) return;
+            if (state == null || !state.isActiveAndEnabled) return;
+            
+            var time = Time.realtimeSinceStartup;
+            if(lastTime > 0f)
+            {
+                var dt = time - lastTime;
+                state.UpdateTime(dt);
+            }
+
+            lastTime = time;
+
         }
         
     }

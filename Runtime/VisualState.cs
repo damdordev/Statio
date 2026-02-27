@@ -161,7 +161,7 @@ namespace Damdor.VisualStates
             }
         }
         
-        private void UpdateTime(float dt)
+        public void UpdateTime(float dt)
         {
             if (!animationProgress.Running) return;
 
@@ -171,7 +171,6 @@ namespace Damdor.VisualStates
                 var t = animationProgress.CurrentTime / animationProgress.FullTime;
                 LoadValuesFromState(animationProgress.TargetState, t);
             }
-
             else
             {
                 animationProgress.Running = false;
