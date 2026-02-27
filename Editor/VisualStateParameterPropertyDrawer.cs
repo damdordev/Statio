@@ -12,6 +12,7 @@ namespace Damdor.VisualStates.Editor
         private const string ValuesPropertyName = "values";
 
         private const float CheckboxSize = 30f;
+        private const float SpacingToOtherProperties = 50f;
         
         private SerializedProperty targetProperty;
         private SerializedProperty defaultValueProperty;
@@ -46,6 +47,8 @@ namespace Damdor.VisualStates.Editor
                     height += EditorGUI.GetPropertyHeight(childProperty);
                     height +=  EditorGUIUtility.standardVerticalSpacing;
                 }
+                
+                if(otherProperties.Count > 0) height += SpacingToOtherProperties;
             }
 
             return height;
@@ -85,6 +88,8 @@ namespace Damdor.VisualStates.Editor
                     y += stateHeight;
                     y += EditorGUIUtility.standardVerticalSpacing;
                 }
+
+                y += SpacingToOtherProperties;
                 
                 foreach (var childProperty in otherProperties)
                 {

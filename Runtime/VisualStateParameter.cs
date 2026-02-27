@@ -297,20 +297,22 @@ namespace Damdor.VisualStates
             }
         }
 
-        void IVisualStateParameterLifecycle.NotifyStateRemoved(int stateId)
+        void IVisualStateParameterLifecycle.NotifyStateRemoved(int removedStateId)
         {
-            values.RemoveAll(v => v.stateId == stateId);
+            values.RemoveAll(v => v.stateId == removedStateId);
             for (var index = 0; index < values.Count; index++)
             {
                 var visualStateParameterValue = values[index];
-                if (visualStateParameterValue.stateId > stateId)
+                var oldStateId = visualStateParameterValue.stateId;
+                var newStateId = VisualStateHelper.RecalculateStateIdAfterStateRemoved(removedStateId, oldStateId);
+
+                if (oldStateId == newStateId) continue;
+                
+                values[index] = new VisualStateParameterValue<TValue, TSerializedValue>()
                 {
-                    values[index] = new VisualStateParameterValue<TValue, TSerializedValue>()
-                    {
-                        stateId = visualStateParameterValue.stateId - 1,
-                        value = visualStateParameterValue.value
-                    };
-                }
+                    stateId = newStateId,
+                    value = visualStateParameterValue.value
+                };
             }
         }
         
@@ -318,35 +320,18 @@ namespace Damdor.VisualStates
         {
             if (oldIndex == newIndex) return;
 
-            if (oldIndex < newIndex)
+            for (var index = 0; index < values.Count; index++)
             {
-                for (var index = 0; index < values.Count; index++)
+                var value = values[index];
+                var oldStateId = value.stateId;
+                var newStateId = VisualStateHelper.RecalculateStateIdAfterStateIdChanged(oldIndex, newIndex, oldStateId);
+                
+                if(oldStateId == newStateId) continue;
+                values[index] = new VisualStateParameterValue<TValue, TSerializedValue>
                 {
-                    var value = values[index];
-                    if (value.stateId == oldIndex)
-                    {
-                        values[index] = new VisualStateParameterValue<TValue, TSerializedValue> { stateId = newIndex, value = value.value };
-                    }
-                    else if (value.stateId > oldIndex && value.stateId <= newIndex)
-                    {
-                        values[index] = new VisualStateParameterValue<TValue, TSerializedValue> { value = value.value, stateId = value.stateId - 1 };
-                    }
-                }
-            }
-            else
-            {
-                for (var index = 0; index < values.Count; index++)
-                {
-                    var value = values[index];
-                    if (value.stateId == oldIndex)
-                    {
-                        values[index] = new VisualStateParameterValue<TValue, TSerializedValue> { stateId = newIndex, value = value.value };
-                    }
-                    else if (value.stateId >= newIndex && value.stateId < oldIndex)
-                    {
-                        values[index] = new VisualStateParameterValue<TValue, TSerializedValue> { value = value.value, stateId = value.stateId + 1 };
-                    }
-                }
+                    value = value.value,
+                    stateId = newStateId
+                };
             }
         }
 

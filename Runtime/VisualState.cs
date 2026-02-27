@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Damdor.Foundation;
 using UnityEngine;
 using Damdor.VariableStorage;
 using Object = UnityEngine.Object;
@@ -22,9 +23,12 @@ namespace Damdor.VisualStates
         [SerializeField] private VariableStorage.VariableStorage storage;
         [SerializeReference] private List<IVisualStateParameterLifecycle> parameters;
         [SerializeField] private int initialStateId = -1;
+        [SerializeField] private StorageValue<TimeSpan, SerializableTimeSpan> animationTime;
 
         private int currentStateId = -1;
         private int stateIdToSetAfterEnable = -1;
+        private bool animateAfterEnable;
+        private VisualStateAnimationProgress animationProgress;
 
         public void AddState(string state)
         {
@@ -33,16 +37,15 @@ namespace Damdor.VisualStates
         
         public void RemoveState(string state)
         {
-            var stateId = states.IndexOf(state);
-            if (stateId == -1) return;
-            states.RemoveAt(stateId);
+            var removedStateId = states.IndexOf(state);
+            if (removedStateId == -1) return;
+            states.RemoveAt(removedStateId);
             
-            foreach (var parameter in parameters) parameter.NotifyStateRemoved(stateId);
-            if (initialStateId == stateId) initialStateId = -1;
-            else if (initialStateId > stateId) --initialStateId;
+            foreach (var parameter in parameters) parameter.NotifyStateRemoved(removedStateId);
+            initialStateId = VisualStateHelper.RecalculateStateIdAfterStateRemoved(removedStateId, initialStateId);
         }
 
-        public void ChangeStateIndex(string state, int newStateId)
+        public void ChangeStateId(string state, int newStateId)
         {
             var oldStateId = states.IndexOf(state);
             if (oldStateId == -1) return;
@@ -51,9 +54,7 @@ namespace Damdor.VisualStates
             states.Insert(newStateId, state);
             
             foreach (var parameter in parameters) parameter.NotifyStateChanged(oldStateId, newStateId);
-            if (initialStateId == oldStateId) initialStateId = newStateId;
-            else if(oldStateId < initialStateId && newStateId >= initialStateId) --initialStateId;
-            else if(oldStateId >= initialStateId && newStateId <= initialStateId) ++initialStateId;
+            initialStateId = VisualStateHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, initialStateId);
         }
 
         public void AddParameter<TComponent, TValue>(VisualStateParameter<TComponent, TValue> parameter)
@@ -70,10 +71,15 @@ namespace Damdor.VisualStates
         
         public void ChangeState(string state)
         {
-            ChangeState(states.IndexOf(state));
+            ChangeState(states.IndexOf(state), true);
+        }
+        
+        public void ChangeStateImmediately(string state)
+        {
+            ChangeState(states.IndexOf(state), false);
         }
 
-        private void ChangeState(int newStateId)
+        private void ChangeState(int newStateId, bool animate)
         {
             AssignStoragesToParameters();
             
@@ -82,20 +88,38 @@ namespace Damdor.VisualStates
                 // TODO: error
                 return;
             }
+
             if (newStateId == currentStateId) return;
 
             if (isActiveAndEnabled)
             {
                 currentStateId = newStateId;
-            
-                foreach (var parameter in parameters)
+
+                var time = (float)storage.Evaluate(animationTime).TotalSeconds;
+                if (time <= 0f) animate = false;
+                
+                if (animate)
                 {
-                    parameter.LoadValue(newStateId);
+                    animationProgress = new VisualStateAnimationProgress
+                    {
+                        Running = true,
+                        CurrentTime = 0f,
+                        FullTime = time,
+                        TargetState = newStateId
+                    };
+                    
+                    foreach (var parameter in parameters) parameter.SaveSnapshot();
+                }
+                else
+                {
+                    animationProgress = new VisualStateAnimationProgress { Running = false };
+                    foreach (var parameter in parameters) parameter.LoadValue(newStateId);
                 }
             }
             else
             {
                 stateIdToSetAfterEnable = newStateId;
+                animateAfterEnable = animate;
             }
         }
 
@@ -103,7 +127,7 @@ namespace Damdor.VisualStates
         {
             if (currentStateId == -1 && initialStateId != -1)
             {
-                ChangeState(initialStateId);
+                ChangeState(initialStateId, false);
             }
         }
 
@@ -117,9 +141,16 @@ namespace Damdor.VisualStates
         {
             if (stateIdToSetAfterEnable == -1) return;
             
-            var tmp = stateIdToSetAfterEnable;
+            var tmpStateIdToSetAfterEnable = stateIdToSetAfterEnable;
+            var tmpAnimateAfterEnable = animateAfterEnable;
             stateIdToSetAfterEnable = -1;
-            ChangeState(tmp);
+            animateAfterEnable = false;
+            ChangeState(tmpStateIdToSetAfterEnable, tmpAnimateAfterEnable);
+        }
+
+        protected virtual void Update()
+        {
+            UpdateTime(Time.deltaTime);
         }
 
         private void AssignStoragesToParameters()
@@ -129,5 +160,40 @@ namespace Damdor.VisualStates
                 parameter.Storage = storage;
             }
         }
+        
+        private void UpdateTime(float dt)
+        {
+            if (!animationProgress.Running) return;
+
+            animationProgress.CurrentTime += dt;
+            if (animationProgress.CurrentTime < animationProgress.FullTime)
+            {
+                var t = animationProgress.CurrentTime / animationProgress.FullTime;
+                LoadValuesFromState(animationProgress.TargetState, t);
+            }
+
+            else
+            {
+                animationProgress.Running = false;
+                LoadValuesFromState(animationProgress.TargetState);
+            }
+        }
+        
+        private void LoadValuesFromState(int stateId)
+        {
+            foreach (var parameter in parameters)
+            {
+                parameter.LoadValue(stateId);
+            }
+        }
+        
+        private void LoadValuesFromState(int stateId, float percentFromSnapshot)
+        {
+            foreach (var parameter in parameters)
+            {
+                parameter.LoadValue(stateId, percentFromSnapshot);
+            }
+        }
+        
     }
 }

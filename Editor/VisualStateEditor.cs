@@ -25,7 +25,7 @@ namespace Damdor.VisualStates.Editor
             var statesProperty = serializedObject.FindProperty("states");
             var storageProperty = serializedObject.FindProperty("storage");
             var parametersProperty = serializedObject.FindProperty("parameters");
-            var initialStateProperty = serializedObject.FindProperty("initialStateId");
+            var animationTimeProperty = serializedObject.FindProperty("animationTime");
 
             if(!propertyPathToReorderableList.TryGetValue(statesProperty.propertyPath, out var statesList))
             {
@@ -65,6 +65,7 @@ namespace Damdor.VisualStates.Editor
             statesList.DoLayoutList();
             EditorGUILayout.PropertyField(storageProperty);
             parametersList.DoLayoutList();
+            EditorGUILayout.PropertyField(animationTimeProperty);
             EditorGUILayout.EndVertical();
 
             serializedObject.ApplyModifiedProperties();
@@ -126,7 +127,7 @@ namespace Damdor.VisualStates.Editor
             reorderableList.onReorderCallbackWithDetails += (l, oldIndex, newIndex) =>
             {
                 Undo.RecordObject(property.serializedObject.targetObject, $"Reorder state");
-                state.ChangeStateIndex(state.States[oldIndex], newIndex);
+                state.ChangeStateId(state.States[oldIndex], newIndex);
                 EditorUtility.SetDirty(property.serializedObject.targetObject);
                 property.serializedObject.Update();
                 property.serializedObject.ApplyModifiedProperties();
