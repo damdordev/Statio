@@ -23,7 +23,7 @@ namespace Damdor.VisualStates
         [SerializeField] private VariableStorage.VariableStorage storage;
         [SerializeReference] private List<IVisualStateParameterLifecycle> parameters;
         [SerializeField] private int initialStateId = -1;
-        [SerializeField] private StorageValue<TimeSpan, SerializableTimeSpan> animationTime;
+        [SerializeField] private List<VisualStateAnimation> animations;
 
         private int currentStateId = -1;
         private int stateIdToSetAfterEnable = -1;
@@ -93,9 +93,10 @@ namespace Damdor.VisualStates
 
             if (isActiveAndEnabled)
             {
+                var animation = GetAnimation(currentStateId, newStateId);
                 currentStateId = newStateId;
 
-                var time = (float)storage.Evaluate(animationTime).TotalSeconds;
+                var time = (float)storage.Evaluate(animation.Duration).TotalSeconds;
                 if (time <= 0f) animate = false;
                 
                 if (animate)
@@ -105,7 +106,8 @@ namespace Damdor.VisualStates
                         Running = true,
                         CurrentTime = 0f,
                         FullTime = time,
-                        TargetState = newStateId
+                        TargetState = newStateId,
+                        Easing = storage.Evaluate(animation.Easing)
                     };
                     
                     foreach (var parameter in parameters) parameter.SaveSnapshot();
@@ -169,6 +171,7 @@ namespace Damdor.VisualStates
             if (animationProgress.CurrentTime < animationProgress.FullTime)
             {
                 var t = animationProgress.CurrentTime / animationProgress.FullTime;
+                if (animationProgress.Easing != null) t = animationProgress.Easing.Evaluate(t);
                 LoadValuesFromState(animationProgress.TargetState, t);
             }
             else
@@ -193,6 +196,30 @@ namespace Damdor.VisualStates
                 parameter.LoadValue(stateId, percentFromSnapshot);
             }
         }
-        
+
+        private VisualStateAnimation GetAnimation(int initialStateId, int targetStateId)
+        {
+            foreach (var a in animations)
+            {
+                if (a.InitialStateId == -1 || a.TargetStateId == -1) continue;
+                if (!AcceptState(initialStateId, a.InitialStateId)) continue;
+                if (!AcceptState(targetStateId, a.TargetStateId)) continue;
+
+                return a;
+            }
+
+            foreach (var a in animations)
+            {
+                if (!AcceptState(initialStateId, a.InitialStateId)) continue;
+                if (!AcceptState(targetStateId, a.TargetStateId)) continue;
+
+                return a;
+            }
+
+            return new VisualStateAnimation();
+        }
+
+        private bool AcceptState(int state, int condition) => condition == -1 || state == condition;
+
     }
 }

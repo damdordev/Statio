@@ -37,7 +37,7 @@ namespace Damdor.VisualStates.Editor
             var statesProperty = serializedObject.FindProperty("states");
             var storageProperty = serializedObject.FindProperty("storage");
             var parametersProperty = serializedObject.FindProperty("parameters");
-            var animationTimeProperty = serializedObject.FindProperty("animationTime");
+            var animationsProperty = serializedObject.FindProperty("animations");
 
             if(!propertyPathToReorderableList.TryGetValue(statesProperty.propertyPath, out var statesList))
             {
@@ -77,7 +77,7 @@ namespace Damdor.VisualStates.Editor
             statesList.DoLayoutList();
             EditorGUILayout.PropertyField(storageProperty);
             parametersList.DoLayoutList();
-            EditorGUILayout.PropertyField(animationTimeProperty);
+            EditorGUILayout.PropertyField(animationsProperty);
             EditorGUILayout.EndVertical();
 
             serializedObject.ApplyModifiedProperties();
