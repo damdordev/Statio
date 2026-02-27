@@ -15,7 +15,7 @@ namespace Damdor.VisualStates.Editor
         private const float GoToStateButtonWidth = 50f;
         
         private readonly Dictionary<string, ReorderableList> propertyPathToReorderableList = new();
-        private VisualState state;
+        private VisualState visualState;
         private float lastTime;
 
         private void OnEnable()
@@ -33,38 +33,32 @@ namespace Damdor.VisualStates.Editor
         {
             serializedObject.Update();
 
-            state = serializedObject.targetObject as VisualState;
+            visualState = serializedObject.targetObject as VisualState;
             var statesProperty = serializedObject.FindProperty("states");
             var storageProperty = serializedObject.FindProperty("storage");
             var parametersProperty = serializedObject.FindProperty("parameters");
             var animationsProperty = serializedObject.FindProperty("animations");
+            var initialStateProperty = serializedObject.FindProperty("initialStateId");
 
             if(!propertyPathToReorderableList.TryGetValue(statesProperty.propertyPath, out var statesList))
             {
                 statesList = CreateStatesReorderableList(statesProperty);
             }
+            
+            if(!propertyPathToReorderableList.TryGetValue(animationsProperty.propertyPath, out var animationsList))
+            {
+                animationsList = CreateAnimationsList(animationsProperty);
+            }
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Initial state", GUILayout.ExpandWidth(false), GUILayout.Width(100));
 
-            var initialStateText = string.IsNullOrEmpty(state.InitialState) ? "-----" : state.InitialState;
-            if (GUILayout.Button(initialStateText, GUILayout.ExpandWidth(false), GUILayout.Width(100)))
+            VisualStateEditorHelper.ShowStateChoice(visualState, initialStateProperty.intValue, "-----", newStateId =>
             {
-                var allStates = new List<string>();
-                allStates.Add("-----");
-                allStates.AddRange(state.States);
-
-                var rect = GUILayoutUtility.GetLastRect();
-                rect.x += 100f;
-                new HierarchicalDropdown<string>(allStates, s => s, newInitialState =>
-                {
-                    Undo.RecordObject(serializedObject.targetObject, "Change initial state");
-                    state.InitialState = newInitialState;
-                    EditorUtility.SetDirty(serializedObject.targetObject);
-                    serializedObject.Update();
-                    serializedObject.ApplyModifiedProperties();
-                }).Show(rect);
-            }
+                initialStateProperty.intValue = newStateId;
+                serializedObject.ApplyModifiedProperties();
+            });
+            
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
@@ -77,7 +71,7 @@ namespace Damdor.VisualStates.Editor
             statesList.DoLayoutList();
             EditorGUILayout.PropertyField(storageProperty);
             parametersList.DoLayoutList();
-            EditorGUILayout.PropertyField(animationsProperty);
+            animationsList.DoLayoutList();
             EditorGUILayout.EndVertical();
 
             serializedObject.ApplyModifiedProperties();
@@ -104,11 +98,11 @@ namespace Damdor.VisualStates.Editor
                 var elementProperty = property.GetArrayElementAtIndex(index);
                 var buttonClicked = GUI.Button(
                     new Rect(rect.x + rect.width - GoToStateButtonWidth, rect.y, GoToStateButtonWidth, rect.height),
-                    state.CurrentState == elementProperty.stringValue ? "x" : ""
+                    visualState.CurrentState == elementProperty.stringValue ? "x" : ""
                 );
                 if (buttonClicked)
                 {
-                    state.ChangeState(elementProperty.stringValue);
+                    visualState.ChangeState(elementProperty.stringValue);
                 }
                 
                 var oldValue = elementProperty.stringValue;
@@ -139,7 +133,7 @@ namespace Damdor.VisualStates.Editor
             reorderableList.onReorderCallbackWithDetails += (l, oldIndex, newIndex) =>
             {
                 Undo.RecordObject(property.serializedObject.targetObject, $"Reorder state");
-                state.ChangeStateId(state.States[oldIndex], newIndex);
+                visualState.ChangeStateId(visualState.States[oldIndex], newIndex);
                 EditorUtility.SetDirty(property.serializedObject.targetObject);
                 property.serializedObject.Update();
                 property.serializedObject.ApplyModifiedProperties();
@@ -148,7 +142,7 @@ namespace Damdor.VisualStates.Editor
             reorderableList.onRemoveCallback += l =>
             {
                 Undo.RecordObject(property.serializedObject.targetObject, $"Remove state");
-                state.RemoveState(state.States[l.index]);
+                visualState.RemoveState(visualState.States[l.index]);
                 EditorUtility.SetDirty(property.serializedObject.targetObject);
                 property.serializedObject.Update();
                 property.serializedObject.ApplyModifiedProperties();
@@ -202,21 +196,97 @@ namespace Damdor.VisualStates.Editor
             
             return reorderableList;
         }
+
+        private ReorderableList CreateAnimationsList(SerializedProperty property)
+        {
+            var reorderableList = new ReorderableList(
+                property.serializedObject,
+                property,
+                true,
+                true,
+                true,
+                true
+            );
+            
+            reorderableList.drawHeaderCallback += rect =>
+            {
+                EditorGUI.LabelField(rect, "Animations");
+            };
+            
+            reorderableList.elementHeight += 3f * EditorGUIUtility.singleLineHeight + 2f * EditorGUIUtility.standardVerticalSpacing;
+            
+            reorderableList.drawElementCallback += (rect, index, _, _) =>
+            {
+                var initialStateIdProperty = property.GetArrayElementAtIndex(index).FindPropertyRelative("InitialStateId");
+                var initialStateIdRect = new Rect(
+                    rect.x,
+                    rect.y,
+                    rect.width / 2f - 10f,
+                    EditorGUIUtility.singleLineHeight
+                );
+                VisualStateEditorHelper.ShowStateChoice(initialStateIdRect, visualState, initialStateIdProperty.intValue, "*", newStateId =>
+                {
+                    initialStateIdProperty.intValue = newStateId;
+                    property.serializedObject.ApplyModifiedProperties();
+                });
+                
+                var targetStateIdProperty = property.GetArrayElementAtIndex(index).FindPropertyRelative("TargetStateId");
+                var targetStateIdRect = new Rect(
+                    rect.x + rect.width/2f + 5f,
+                    rect.y,
+                    rect.width / 2f - 10f,
+                    EditorGUIUtility.singleLineHeight
+                );
+                VisualStateEditorHelper.ShowStateChoice(targetStateIdRect, visualState, targetStateIdProperty.intValue, "*", newStateId =>
+                {
+                    targetStateIdProperty.intValue = newStateId;
+                    property.serializedObject.ApplyModifiedProperties();
+                });
+                
+                var durationProperty = property.GetArrayElementAtIndex(index).FindPropertyRelative("Duration");
+                var durationRect = new Rect(
+                    rect.x,
+                    rect.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing,
+                    rect.width,
+                    EditorGUIUtility.singleLineHeight
+                );
+
+                EditorGUI.PropertyField(durationRect, durationProperty);
+                
+                var easingProperty = property.GetArrayElementAtIndex(index).FindPropertyRelative("Easing");
+                var easingRect = new Rect(
+                    rect.x,
+                    rect.y + 2f * EditorGUIUtility.singleLineHeight + 2f * EditorGUIUtility.standardVerticalSpacing,
+                    rect.width,
+                    EditorGUIUtility.singleLineHeight
+                );
+
+                EditorGUI.PropertyField(easingRect, easingProperty);
+            };
+
+            reorderableList.onAddDropdownCallback += (rect, _) =>
+            {
+                property.InsertArrayElementAtIndex(property.arraySize);
+            };
+            
+            propertyPathToReorderableList[property.propertyPath] = reorderableList;
+            
+            return reorderableList;
+        }
         
         private void EditorUpdate()
         {
             if (Application.isPlaying) return;
-            if (state == null || !state.isActiveAndEnabled) return;
+            if (visualState == null || !visualState.isActiveAndEnabled) return;
             
             var time = Time.realtimeSinceStartup;
             if(lastTime > 0f)
             {
                 var dt = time - lastTime;
-                state.UpdateTime(dt);
+                visualState.UpdateTime(dt);
             }
 
             lastTime = time;
-
         }
         
     }

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Damdor.Foundation.Editor;
 using UnityEditor;
+using UnityEngine;
 
 namespace Damdor.VisualStates.Editor
 {
@@ -35,6 +38,43 @@ namespace Damdor.VisualStates.Editor
             variableTypeToName[type] = name;
 
             return name;
+        }
+        
+        public static void ShowStateChoice(VisualState visualState, int stateId, string emptyStateName, Action<int> onChange)
+        {
+            var text = stateId < 0 ? emptyStateName : visualState.States[stateId];
+            if (GUILayout.Button(text, GUILayout.ExpandWidth(false), GUILayout.Width(100)))
+            {
+                var rect = GUILayoutUtility.GetLastRect();
+                rect.x += 100f;
+                ShowStateChoiceDropdown(rect, visualState, stateId, emptyStateName, onChange);
+            }
+        }
+        
+        public static void ShowStateChoice(Rect rect, VisualState visualState, int stateId, string emptyStateName, Action<int> onChange)
+        {
+            var text = stateId < 0 ? emptyStateName : visualState.States[stateId];
+            if (GUI.Button(rect, text))
+            {
+                ShowStateChoiceDropdown(rect, visualState, stateId, emptyStateName, onChange);
+            }
+        }
+
+        public static void ShowStateChoiceDropdown(
+            Rect rect,
+            VisualState visualState, 
+            int selectedStateId,
+            string emptyStateName,
+            Action<int> onChange)
+        {
+            var allStates = new List<string> { emptyStateName };
+            allStates.AddRange(visualState.States);
+
+            new HierarchicalDropdown<int>(Enumerable.Range(0, allStates.Count), i => allStates[i], newStateId =>
+            {
+                --newStateId;
+                if(selectedStateId != newStateId && onChange != null) onChange(newStateId);
+            }).Show(rect);
         }
         
     }
