@@ -118,6 +118,24 @@ namespace Damdor.VisualStates
             }
         }
 
+        void IVisualStateParameterLifecycle.SaveCurrentValueToDefaultValue()
+        {
+            defaultValue = new StorageValue<TValue>
+            {
+                Source = ValueSource.Raw,
+                Value = GetValue(ResolveTarget())
+            };
+        }
+
+        void IVisualStateParameterLifecycle.SaveCurrentValueToState(int stateId)
+        {
+            SetValue(stateId, new StorageValue<TValue>
+            {
+                Source = ValueSource.Raw,
+                Value = GetValue(ResolveTarget())
+            });
+        }
+        
         void IVisualStateParameterLifecycle.NotifyStateRemoved(int stateId)
         {
             values.RemoveAll(v => v.stateId == stateId);
@@ -295,6 +313,24 @@ namespace Damdor.VisualStates
                 var targetVal = ResolveValue(GetValue(stateId));
                 SetValue(component, Lerp(snapshot, targetVal, percentFromSnapshot));
             }
+        }
+        
+        void IVisualStateParameterLifecycle.SaveCurrentValueToDefaultValue()
+        {
+            defaultValue = new StorageValue<TValue, TSerializedValue>
+            {
+                Source = ValueSource.Raw,
+                Value = GetValue(ResolveTarget())
+            };
+        }
+
+        void IVisualStateParameterLifecycle.SaveCurrentValueToState(int stateId)
+        {
+            SetValue(stateId, new StorageValue<TValue, TSerializedValue>
+            {
+                Source = ValueSource.Raw,
+                Value = GetValue(ResolveTarget())
+            });
         }
 
         void IVisualStateParameterLifecycle.NotifyStateRemoved(int removedStateId)

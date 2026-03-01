@@ -37,6 +37,17 @@ namespace Damdor.VisualStates
         /// Captures the current value of the target component as a snapshot for interpolation.
         /// </summary>
         void SaveSnapshot();
+
+        /// <summary>
+        /// Saves the current value of the target component as the default value.
+        /// </summary>
+        void SaveCurrentValueToDefaultValue();
+
+        /// <summary>
+        /// Saves the current value of the target component to the specified state ID.
+        /// </summary>
+        /// <param name="stateId">The identifier of the state to save to.</param>
+        void SaveCurrentValueToState(int stateId);
         
         /// <summary>
         /// Updates internal data structures when a state is removed, shifting subsequent state IDs accordingly.

@@ -13,6 +13,7 @@ namespace Damdor.VisualStates.Editor
 
         private const float CheckboxSize = 30f;
         private const float SpacingToOtherProperties = 50f;
+        private const float LoadButtonWidth = 25f;
         
         private SerializedProperty targetProperty;
         private SerializedProperty defaultValueProperty;
@@ -58,6 +59,7 @@ namespace Damdor.VisualStates.Editor
         {
             RetrieveProperties(property);
             EditorGUI.BeginProperty(position, label, property);
+            var parameter = (IVisualStateParameterLifecycle) property.managedReferenceValue;
 
             var y = position.y;
             ShowTopLine(
@@ -72,7 +74,8 @@ namespace Damdor.VisualStates.Editor
             {
                 ShowDefaultValue(
                     new Rect(position.x, y, position.width, EditorGUI.GetPropertyHeight(defaultValueProperty)),
-                    defaultValueProperty
+                    defaultValueProperty,
+                    parameter
                 );
                 y += EditorGUI.GetPropertyHeight(defaultValueProperty);
                 y += EditorGUIUtility.standardVerticalSpacing;
@@ -82,7 +85,8 @@ namespace Damdor.VisualStates.Editor
                     var stateHeight = ShowState(
                         new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
                         valuesProperty,
-                        stateIndex
+                        stateIndex,
+                        parameter
                     );
 
                     y += stateHeight;
@@ -126,13 +130,29 @@ namespace Damdor.VisualStates.Editor
             );
         }
 
-        private void ShowDefaultValue(Rect rect, SerializedProperty property)
+        private void ShowDefaultValue(Rect rect, SerializedProperty property, IVisualStateParameterLifecycle parameter)
         {
             EditorGUI.LabelField(
-                new Rect(rect.x + CheckboxSize, rect.y, (rect.width - CheckboxSize) / 2,
+                new Rect(rect.x + CheckboxSize, rect.y, (rect.width - CheckboxSize) /  - LoadButtonWidth,
                     EditorGUIUtility.singleLineHeight),
                 "Default value"
             );
+            
+            if(GUI.Button(
+                new Rect(
+                    rect.x - CheckboxSize + (rect.width - CheckboxSize) / 2 - LoadButtonWidth,
+                    rect.y,
+                    LoadButtonWidth,
+                    EditorGUIUtility.singleLineHeight
+                ),
+                "L"
+                ))
+            {
+                Undo.RecordObject(property.serializedObject.targetObject, "Load value");
+                parameter.SaveCurrentValueToDefaultValue();
+                valuesProperty.serializedObject.Update();
+                valuesProperty.serializedObject.ApplyModifiedProperties();
+            }
             
             EditorGUI.PropertyField(
                 new Rect(
@@ -165,7 +185,7 @@ namespace Damdor.VisualStates.Editor
             } while (copy.NextVisible(false));
         }
 
-        private float ShowState(Rect rect, SerializedProperty valuesProperty, int stateIndex)
+        private float ShowState(Rect rect, SerializedProperty valuesProperty, int stateIndex, IVisualStateParameterLifecycle parameter)
         {
             SerializedProperty valueProperty = null;
             int valuePropertyIndex = 0;
@@ -190,9 +210,29 @@ namespace Damdor.VisualStates.Editor
             );
 
             EditorGUI.LabelField(
-                new Rect(rect.x + CheckboxSize, rect.y, (rect.width - CheckboxSize)/2,  EditorGUIUtility.singleLineHeight),
+                new Rect(
+                    rect.x + CheckboxSize,
+                    rect.y,
+                    (rect.width - CheckboxSize) / 2 - 1,
+                    EditorGUIUtility.singleLineHeight),
                 state.States[stateIndex]
             );
+            
+            if(GUI.Button(
+                   new Rect(
+                       rect.x - CheckboxSize + (rect.width - CheckboxSize) / 2 - LoadButtonWidth,
+                       rect.y,
+                       LoadButtonWidth,
+                       EditorGUIUtility.singleLineHeight
+                   ),
+                   "L"
+               ))
+            {
+                Undo.RecordObject(valuesProperty.serializedObject.targetObject, "Load value");
+                parameter.SaveCurrentValueToState(stateIndex);
+                valuesProperty.serializedObject.Update();
+                valuesProperty.serializedObject.ApplyModifiedProperties();
+            }
             
             if (valueProperty != null)
             {
