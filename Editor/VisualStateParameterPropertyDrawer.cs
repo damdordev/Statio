@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +13,6 @@ namespace Damdor.VisualStates.Editor
         private const string ValuesPropertyName = "values";
 
         private const float CheckboxSize = 30f;
-        private const float SpacingToOtherProperties = 50f;
         private const float LoadButtonWidth = 25f;
         
         private SerializedProperty targetProperty;
@@ -42,14 +42,17 @@ namespace Damdor.VisualStates.Editor
 
                 height += Mathf.Max(0, state.States.Count - valuesProperty.arraySize) *
                           (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+
+                if (otherProperties.Count > 0)
+                {
+                    height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                }
                 
                 foreach (var childProperty in otherProperties)
                 {
                     height += EditorGUI.GetPropertyHeight(childProperty);
                     height +=  EditorGUIUtility.standardVerticalSpacing;
                 }
-                
-                if(otherProperties.Count > 0) height += SpacingToOtherProperties;
             }
 
             return height;
@@ -93,13 +96,27 @@ namespace Damdor.VisualStates.Editor
                     y += EditorGUIUtility.standardVerticalSpacing;
                 }
 
-                y += SpacingToOtherProperties;
-                
+                if (otherProperties.Count > 0)
+                {
+                    var rectHeight = otherProperties.Sum(EditorGUI.GetPropertyHeight) + otherProperties.Count * EditorGUIUtility.standardVerticalSpacing;
+                    EditorGUI.DrawRect(
+                        new Rect(position.x, y, position.width, 2),
+                        new Color(0f, 0f, 0f, 1f)
+                    );
+                    
+                    EditorGUI.LabelField(
+                        new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+                        "Other properties"
+                    );
+                    y += EditorGUIUtility.singleLineHeight;
+                    y += EditorGUIUtility.standardVerticalSpacing;
+                }
+
                 foreach (var childProperty in otherProperties)
                 {
                     var sizeY = EditorGUI.GetPropertyHeight(childProperty);
                     EditorGUI.PropertyField(
-                        new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+                        new Rect(position.x, y, position.width, sizeY),
                         childProperty
                     );
                     
