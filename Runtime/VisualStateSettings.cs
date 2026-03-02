@@ -34,7 +34,18 @@ namespace Damdor.VisualStates
             
             supportedParameterTypes.Add(typeof(PositionVisualStateParameter));
             supportedParameterTypes.Add(typeof(ScaleVisualStateParameter));
-            supportedParameterTypes.Add(typeof(ImageColorVisualStateParameter));
+            supportedParameterTypes.Add(typeof(GraphicColorVisualStateParameter));
+            supportedParameterTypes.Add(typeof(GameObjectActivityVisualStateParameter));
+            supportedParameterTypes.Add(typeof(TransformParentVisualStateParameter));
+            supportedParameterTypes.Add(typeof(VisualStateVisualStateParameter));
+            supportedParameterTypes.Add(typeof(EulerAnglesVisualStateParameter));
+            supportedParameterTypes.Add(typeof(RectTransformWidthVisualStateParameter));
+            supportedParameterTypes.Add(typeof(RectTransformHeightVisualStateParameter));
+            supportedParameterTypes.Add(typeof(RectTransformPivotVisualStateParameter));
+            supportedParameterTypes.Add(typeof(RectTransformAnchoredPositionVisualStateParameter));
+            supportedParameterTypes.Add(typeof(RectTransformAnchorMinVisualStateParameter));
+            supportedParameterTypes.Add(typeof(RectTransformAnchorMaxVisualStateParameter));
+            supportedParameterTypes.Add(typeof(CanvasGroupAlphaVisualStateParameter));
         }
         
         private static void EnsureInit()

@@ -19,12 +19,6 @@ namespace Damdor.VisualStates
             set => storage = value;
         }
         
-        VariableStorage.VariableStorage IVisualStateParameterLifecycle.ParentStorage
-        {
-            get => parentStorage;
-            set => parentStorage = value;
-        }
-        
         public StorageValue<TComponent> Target
         {
             get => target;
@@ -43,7 +37,6 @@ namespace Damdor.VisualStates
 
         private TValue snapshot;
         private VariableStorage.VariableStorage storage;
-        private VariableStorage.VariableStorage parentStorage;
 
         public void SetValue(int stateId, StorageValue<TValue> value)
         {
@@ -191,18 +184,24 @@ namespace Damdor.VisualStates
 
         protected abstract TValue GetValue(TComponent target);
         protected abstract void SetValue(TComponent target, TValue value);
-        protected abstract TValue Lerp(TValue a, TValue b, float t);
+        protected virtual TValue Lerp(TValue a, TValue b, float t) => t >= 0.5f ? a : b;
 
         private TComponent ResolveTarget()
         {
             if (storage == null) return target.Value;
-            return storage.Evaluate(target, parentStorage); 
+            return storage.Evaluate(target); 
         }
 
-        private TValue ResolveValue(StorageValue<TValue> storageValue)
+        protected T ResolveValue<T>(StorageValue<T> storageValue)
         {
             if (storage == null) return storageValue.Value;
-            return storage.Evaluate(storageValue, parentStorage);
+            return storage.Evaluate(storageValue);
+        }
+        
+        protected T ResolveValue<T, TSerialized>(StorageValue<T, TSerialized> storageValue)
+        {
+            if (storage == null) return storageValue.Value;
+            return storage.Evaluate(storageValue);
         }
     }
     
@@ -214,12 +213,6 @@ namespace Damdor.VisualStates
         {
             get => storage;
             set => storage = value;
-        }
-        
-        VariableStorage.VariableStorage IVisualStateParameterLifecycle.ParentStorage
-        {
-            get => parentStorage;
-            set => parentStorage = value;
         }
         
         public StorageValue<TComponent> Target
@@ -240,7 +233,6 @@ namespace Damdor.VisualStates
 
         private TValue snapshot;
         private VariableStorage.VariableStorage storage;
-        private VariableStorage.VariableStorage parentStorage;
 
         public void SetValue(int stateId, StorageValue<TValue, TSerializedValue> value)
         {
@@ -373,18 +365,24 @@ namespace Damdor.VisualStates
 
         protected abstract TValue GetValue(TComponent target);
         protected abstract void SetValue(TComponent target, TValue value);
-        protected abstract TValue Lerp(TValue a, TValue b, float t);
+        protected virtual TValue Lerp(TValue a, TValue b, float t) => t >= 0.5f ? a : b;
 
         private TComponent ResolveTarget()
         {
             if (storage == null) return target.Value;
-            return storage.Evaluate(target, parentStorage); 
+            return storage.Evaluate(target); 
         }
 
-        private TValue ResolveValue(StorageValue<TValue, TSerializedValue> storageValue)
+        protected T ResolveValue<T>(StorageValue<T> storageValue)
         {
             if (storage == null) return storageValue.Value;
-            return storage.Evaluate(storageValue, parentStorage);
+            return storage.Evaluate(storageValue);
+        }
+        
+        protected T ResolveValue<T, TSerialized>(StorageValue<T, TSerialized> storageValue)
+        {
+            if (storage == null) return storageValue.Value;
+            return storage.Evaluate(storageValue);
         }
     }
 

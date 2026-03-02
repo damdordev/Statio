@@ -11,11 +11,6 @@ namespace Damdor.VisualStates
         VariableStorage.VariableStorage Storage { get; set; }
         
         /// <summary>
-        /// Gets or sets the parent variable storage for hierarchical value resolution.
-        /// </summary>
-        VariableStorage.VariableStorage ParentStorage { get; set; }
-        
-        /// <summary>
         /// Applies the default value to the target component.
         /// </summary>
         void LoadDefaultValue();
