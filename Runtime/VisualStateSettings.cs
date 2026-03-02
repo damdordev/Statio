@@ -36,7 +36,14 @@ namespace Damdor.VisualStates
 
         public static void RegisterErrorHandler(VisualStateErrorHandler handler)
         {
+            EnsureInit();
             errorHandler = handler;
+        }
+
+        public static void RegisterParameterType(Type type)
+        {
+            EnsureInit();
+            supportedParameterTypes.Add(type);
         }
 
         private static void ClearSupportedParameterTypes()
@@ -72,6 +79,7 @@ namespace Damdor.VisualStates
 
         internal static void NotifyError(VisualState visualState, string error)
         {
+            EnsureInit();
             if (logErrorsToConsole)
             {
                 var path = visualState == null ? null : visualState.transform.GetFullPath();
