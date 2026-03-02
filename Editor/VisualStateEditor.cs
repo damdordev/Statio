@@ -39,6 +39,7 @@ namespace Damdor.VisualStates.Editor
             var parametersProperty = serializedObject.FindProperty("parameters");
             var animationsProperty = serializedObject.FindProperty("animations");
             var initialStateProperty = serializedObject.FindProperty("initialStateId");
+            var timescaleProperty = serializedObject.FindProperty("timescale");
 
             if(!propertyPathToReorderableList.TryGetValue(statesProperty.propertyPath, out var statesList))
             {
@@ -62,6 +63,8 @@ namespace Damdor.VisualStates.Editor
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
+            EditorGUILayout.PropertyField(timescaleProperty);
+            
             if (!propertyPathToReorderableList.TryGetValue(parametersProperty.propertyPath, out var parametersList))
             {
                 parametersList = CreateParametersReorderableList(parametersProperty);

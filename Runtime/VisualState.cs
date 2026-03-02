@@ -19,11 +19,18 @@ namespace Damdor.VisualStates
             set => initialStateId = states.IndexOf(value);
         }
         
+        public VisualStateTimescale Timescale
+        {
+            get => timescale;
+            set => timescale = value;
+        }
+        
         [SerializeField] private List<string> states;
         [SerializeField] private VariableStorage.VariableStorage storage;
         [SerializeReference] private List<IVisualStateParameterLifecycle> parameters;
         [SerializeField] private int initialStateId = -1;
         [SerializeField] private List<VisualStateAnimation> animations;
+        [SerializeField] private VisualStateTimescale timescale;
 
         private int currentStateId = -1;
         private int stateIdToSetAfterEnable = -1;
@@ -152,7 +159,7 @@ namespace Damdor.VisualStates
 
         protected virtual void Update()
         {
-            UpdateTime(Time.deltaTime);
+            UpdateTime(timescale == VisualStateTimescale.Normal ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         private void AssignStoragesToParameters()
