@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Damdor.Foundation;
+using UnityEngine;
 
 namespace Damdor.VisualStates
 {
@@ -14,16 +16,30 @@ namespace Damdor.VisualStates
             }
         }
 
+        public static bool LogErrorsToConsole
+        {
+            get => logErrorsToConsole;
+            set => logErrorsToConsole = value;
+        }
+
         private static bool init;
         private static readonly List<Type> supportedParameterTypes = new();
+        private static bool logErrorsToConsole;
+        private static VisualStateErrorHandler errorHandler;
         
         public static void ResetToInitialSettings()
         {
             ResetSupportedParameterTypes();
             init = true;
+            errorHandler = null;
         }
 
-        public static void ClearSupportedParameterTypes()
+        public static void RegisterErrorHandler(VisualStateErrorHandler handler)
+        {
+            errorHandler = handler;
+        }
+
+        private static void ClearSupportedParameterTypes()
         {
             supportedParameterTypes.Clear();
         }
@@ -52,6 +68,17 @@ namespace Damdor.VisualStates
         {
             if (init) return;
             ResetToInitialSettings();
+        }
+
+        internal static void NotifyError(VisualState visualState, string error)
+        {
+            if (logErrorsToConsole)
+            {
+                var path = visualState == null ? null : visualState.transform.GetFullPath();
+                Debug.LogError($"Visual state error [{path}]: {error}");
+            }
+
+            if (errorHandler != null) errorHandler(visualState, error);
         }
         
     }

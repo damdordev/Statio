@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Damdor.Foundation;
 using UnityEngine;
 using Damdor.VariableStorage;
 using Object = UnityEngine.Object;
@@ -39,13 +38,27 @@ namespace Damdor.VisualStates
 
         public void AddState(string state)
         {
+            if (string.IsNullOrEmpty(state))
+            {
+                VisualStateSettings.NotifyError(this, "Trying to add empty state");
+                return;
+            }
+            if (states.Contains(state))
+            {
+                VisualStateSettings.NotifyError(this, $"Trying to add existing state: {state}");
+                return;
+            }
             states.Add(state);
         }
         
         public void RemoveState(string state)
         {
             var removedStateId = states.IndexOf(state);
-            if (removedStateId == -1) return;
+            if (removedStateId == -1)
+            {
+                VisualStateSettings.NotifyError(this, $"Trying to remove non-existing state: {state}");
+                return;
+            }
             states.RemoveAt(removedStateId);
             
             foreach (var parameter in parameters) parameter.NotifyStateRemoved(removedStateId);
@@ -55,7 +68,11 @@ namespace Damdor.VisualStates
         public void ChangeStateId(string state, int newStateId)
         {
             var oldStateId = states.IndexOf(state);
-            if (oldStateId == -1) return;
+            if (oldStateId == -1)
+            {
+                VisualStateSettings.NotifyError(this, $"Trying to move non-existing state: {state}");
+                return;
+            }
 
             states.RemoveAt(oldStateId);
             states.Insert(newStateId, state);
@@ -78,24 +95,25 @@ namespace Damdor.VisualStates
         
         public void ChangeState(string state)
         {
-            ChangeState(states.IndexOf(state), true);
+            var stateID = states.IndexOf(state);
+            if (stateID == -1)
+            {
+                VisualStateSettings.NotifyError(this, $"Trying to change to non existing state: {state}");
+            }
+
+            ChangeState(GetStateId(state), true);
         }
         
         public void ChangeStateImmediately(string state)
         {
-            ChangeState(states.IndexOf(state), false);
+            ChangeState(GetStateId(state), false);
         }
 
         private void ChangeState(int newStateId, bool animate)
         {
             AssignStoragesToParameters();
             
-            if (newStateId == -1)
-            {
-                // TODO: error
-                return;
-            }
-
+            if (newStateId == -1) return;
             if (newStateId == currentStateId) return;
 
             if (isActiveAndEnabled)
@@ -116,13 +134,35 @@ namespace Damdor.VisualStates
                         TargetState = newStateId,
                         Easing = storage.Evaluate(animation.Easing)
                     };
-                    
-                    foreach (var parameter in parameters) parameter.SaveSnapshot();
+
+                    for (var index = 0; index < parameters.Count; index++)
+                    {
+                        var parameter = parameters[index];
+                        try
+                        {
+                            parameter.SaveSnapshot();
+                        }
+                        catch (Exception e)
+                        {
+                            VisualStateSettings.NotifyError(this, $"Error on saving snapshot, parameter {index}:\n{e}");
+                        }
+                    }
                 }
                 else
                 {
                     animationProgress = new VisualStateAnimationProgress { Running = false };
-                    foreach (var parameter in parameters) parameter.LoadValue(newStateId);
+                    for (var index = 0; index < parameters.Count; index++)
+                    {
+                        var parameter = parameters[index];
+                        try
+                        {
+                            parameter.LoadValue(newStateId);
+                        }
+                        catch (Exception e)
+                        {
+                            VisualStateSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
+                        }
+                    }
                 }
             }
             else
@@ -190,17 +230,34 @@ namespace Damdor.VisualStates
         
         private void LoadValuesFromState(int stateId)
         {
-            foreach (var parameter in parameters)
+            for (var index = 0; index < parameters.Count; index++)
             {
-                parameter.LoadValue(stateId);
+                var parameter = parameters[index];
+                try
+                {
+                    parameter.LoadValue(stateId);
+                }
+                catch (Exception e)
+                {
+                    VisualStateSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
+                }
             }
         }
         
         private void LoadValuesFromState(int stateId, float percentFromSnapshot)
         {
-            foreach (var parameter in parameters)
+            for (var index = 0; index < parameters.Count; index++)
             {
-                parameter.LoadValue(stateId, percentFromSnapshot);
+                var parameter = parameters[index];
+                try
+                {
+                    parameter.LoadValue(stateId, percentFromSnapshot);
+                }
+                catch (Exception e)
+                {
+                    VisualStateSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
+
+                }
             }
         }
 
@@ -228,5 +285,15 @@ namespace Damdor.VisualStates
 
         private bool AcceptState(int state, int condition) => condition == -1 || state == condition;
 
+        private int GetStateId(string state)
+        {
+            var stateId = states.IndexOf(state);
+            if (stateId == -1)
+            {
+                VisualStateSettings.NotifyError(this, $"Trying to get non existing state: {state}");
+            }
+            return stateId;
+        }
+        
     }
 }
