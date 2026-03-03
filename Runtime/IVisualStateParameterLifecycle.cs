@@ -8,7 +8,7 @@ namespace Damdor.VisualStates
         /// <summary>
         /// Gets or sets the primary variable storage used for resolving values.
         /// </summary>
-        VariableStorage.VariableStorage Storage { get; set; }
+        Vario.VarioStorage Storage { get; set; }
         
         /// <summary>
         /// Applies the default value to the target component.

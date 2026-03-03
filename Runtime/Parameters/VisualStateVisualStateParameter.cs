@@ -1,4 +1,4 @@
-using Damdor.VariableStorage;
+using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.VisualStates
@@ -14,6 +14,6 @@ namespace Damdor.VisualStates
             else target.ChangeStateImmediately(value);
         }
 
-        [SerializeField] private StorageValue<bool> animate;
+        [SerializeField] private VarioValue<bool> animate;
     }
 }

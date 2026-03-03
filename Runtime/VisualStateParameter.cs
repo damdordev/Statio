@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Damdor.VariableStorage;
+using Damdor.Vario;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -13,32 +13,32 @@ namespace Damdor.VisualStates
     public abstract class VisualStateParameter<TComponent, TValue> : VisualStateParameter, IVisualStateParameterLifecycle, IVisualStateParameter<TComponent, TValue>
         where TComponent : Object
     {
-        VariableStorage.VariableStorage IVisualStateParameterLifecycle.Storage
+        Vario.VarioStorage IVisualStateParameterLifecycle.Storage
         {
             get => storage;
             set => storage = value;
         }
         
-        public StorageValue<TComponent> Target
+        public VarioValue<TComponent> Target
         {
             get => target;
             set => target = value;
         }
 
-        public StorageValue<TValue> DefaultValue
+        public VarioValue<TValue> DefaultValue
         {
             get => defaultValue;
             set => defaultValue = value;
         }
 
-        [SerializeField] private StorageValue<TComponent> target;
-        [SerializeField] private StorageValue<TValue> defaultValue;
+        [SerializeField] private VarioValue<TComponent> target;
+        [SerializeField] private VarioValue<TValue> defaultValue;
         [SerializeField] private List<VisualStateParameterValue<TValue>> values = new();
 
         private TValue snapshot;
-        private VariableStorage.VariableStorage storage;
+        private Vario.VarioStorage storage;
 
-        public void SetValue(int stateId, StorageValue<TValue> value)
+        public void SetValue(int stateId, VarioValue<TValue> value)
         {
             for (var i = 0; i < values.Count; i++)
             {
@@ -49,7 +49,7 @@ namespace Damdor.VisualStates
             values.Add(new VisualStateParameterValue<TValue> { stateId = stateId, value = value });
         }
 
-        public StorageValue<TValue> GetValue(int stateId)
+        public VarioValue<TValue> GetValue(int stateId)
         {
             foreach (var value in values)
             {
@@ -113,7 +113,7 @@ namespace Damdor.VisualStates
 
         void IVisualStateParameterLifecycle.SaveCurrentValueToDefaultValue()
         {
-            defaultValue = new StorageValue<TValue>
+            defaultValue = new VarioValue<TValue>
             {
                 Source = ValueSource.Raw,
                 Value = GetValue(ResolveTarget())
@@ -122,7 +122,7 @@ namespace Damdor.VisualStates
 
         void IVisualStateParameterLifecycle.SaveCurrentValueToState(int stateId)
         {
-            SetValue(stateId, new StorageValue<TValue>
+            SetValue(stateId, new VarioValue<TValue>
             {
                 Source = ValueSource.Raw,
                 Value = GetValue(ResolveTarget())
@@ -192,13 +192,13 @@ namespace Damdor.VisualStates
             return storage.Evaluate(target); 
         }
 
-        protected T ResolveValue<T>(StorageValue<T> storageValue)
+        protected T ResolveValue<T>(VarioValue<T> storageValue)
         {
             if (storage == null) return storageValue.Value;
             return storage.Evaluate(storageValue);
         }
         
-        protected T ResolveValue<T, TSerialized>(StorageValue<T, TSerialized> storageValue)
+        protected T ResolveValue<T, TSerialized>(VarioValue<T, TSerialized> storageValue)
         {
             if (storage == null) return storageValue.Value;
             return storage.Evaluate(storageValue);
@@ -209,32 +209,32 @@ namespace Damdor.VisualStates
     public abstract class VisualStateParameter<TComponent, TSerializedValue, TValue> : VisualStateParameter, IVisualStateParameterLifecycle, IVisualStateParameter<TComponent, TValue, TSerializedValue>
         where TComponent : Object
     {
-        VariableStorage.VariableStorage IVisualStateParameterLifecycle.Storage
+        Vario.VarioStorage IVisualStateParameterLifecycle.Storage
         {
             get => storage;
             set => storage = value;
         }
         
-        public StorageValue<TComponent> Target
+        public VarioValue<TComponent> Target
         {
             get => target;
             set => target = value;
         }
 
-        public StorageValue<TValue, TSerializedValue> DefaultValue
+        public VarioValue<TValue, TSerializedValue> DefaultValue
         {
             get => defaultValue;
             set => defaultValue = value;
         }
 
-        [SerializeField] private StorageValue<TComponent> target;
-        [SerializeField] private StorageValue<TValue, TSerializedValue> defaultValue;
+        [SerializeField] private VarioValue<TComponent> target;
+        [SerializeField] private VarioValue<TValue, TSerializedValue> defaultValue;
         [SerializeField] private List<VisualStateParameterValue<TValue, TSerializedValue>> values = new();
 
         private TValue snapshot;
-        private VariableStorage.VariableStorage storage;
+        private Vario.VarioStorage storage;
 
-        public void SetValue(int stateId, StorageValue<TValue, TSerializedValue> value)
+        public void SetValue(int stateId, VarioValue<TValue, TSerializedValue> value)
         {
             for (var i = 0; i < values.Count; i++)
             {
@@ -245,7 +245,7 @@ namespace Damdor.VisualStates
             values.Add(new VisualStateParameterValue<TValue, TSerializedValue> { stateId = stateId, value = value });
         }
 
-        public StorageValue<TValue, TSerializedValue> GetValue(int stateId)
+        public VarioValue<TValue, TSerializedValue> GetValue(int stateId)
         {
             foreach (var value in values)
             {
@@ -309,7 +309,7 @@ namespace Damdor.VisualStates
         
         void IVisualStateParameterLifecycle.SaveCurrentValueToDefaultValue()
         {
-            defaultValue = new StorageValue<TValue, TSerializedValue>
+            defaultValue = new VarioValue<TValue, TSerializedValue>
             {
                 Source = ValueSource.Raw,
                 Value = GetValue(ResolveTarget())
@@ -318,7 +318,7 @@ namespace Damdor.VisualStates
 
         void IVisualStateParameterLifecycle.SaveCurrentValueToState(int stateId)
         {
-            SetValue(stateId, new StorageValue<TValue, TSerializedValue>
+            SetValue(stateId, new VarioValue<TValue, TSerializedValue>
             {
                 Source = ValueSource.Raw,
                 Value = GetValue(ResolveTarget())
@@ -373,13 +373,13 @@ namespace Damdor.VisualStates
             return storage.Evaluate(target); 
         }
 
-        protected T ResolveValue<T>(StorageValue<T> storageValue)
+        protected T ResolveValue<T>(VarioValue<T> storageValue)
         {
             if (storage == null) return storageValue.Value;
             return storage.Evaluate(storageValue);
         }
         
-        protected T ResolveValue<T, TSerialized>(StorageValue<T, TSerialized> storageValue)
+        protected T ResolveValue<T, TSerialized>(VarioValue<T, TSerialized> storageValue)
         {
             if (storage == null) return storageValue.Value;
             return storage.Evaluate(storageValue);
@@ -390,13 +390,13 @@ namespace Damdor.VisualStates
     public struct VisualStateParameterValue<TValue>
     {
         public int stateId;
-        public StorageValue<TValue> value;
+        public VarioValue<TValue> value;
     }
     
     [Serializable]
     public struct VisualStateParameterValue<TValue, TSerializableValue>
     {
         public int stateId;
-        public StorageValue<TValue, TSerializableValue> value;
+        public VarioValue<TValue, TSerializableValue> value;
     }
 }

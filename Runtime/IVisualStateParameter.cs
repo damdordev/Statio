@@ -1,4 +1,4 @@
-using Damdor.VariableStorage;
+using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.VisualStates
@@ -37,19 +37,19 @@ namespace Damdor.VisualStates
         /// Gets or sets the target component to be modified by this parameter.
         /// Can be a direct reference (Raw) or resolved via VariableStorage.
         /// </summary>
-        StorageValue<TComponent> Target { get; set; }
+        VarioValue<TComponent> Target { get; set; }
         
         /// <summary>
         /// Gets or sets the default value to apply when no specific state override is active.
         /// </summary>
-        StorageValue<TValue> DefaultValue { get; set; }
+        VarioValue<TValue> DefaultValue { get; set; }
         
         /// <summary>
         /// Sets an override value for a specific state ID.
         /// </summary>
         /// <param name="stateId">The unique identifier of the state.</param>
         /// <param name="value">The value to apply when this state is active.</param>
-        void SetValue(int stateId, StorageValue<TValue> value);
+        void SetValue(int stateId, VarioValue<TValue> value);
         
         /// <summary>
         /// Retrieves the configured value for a specific state ID.
@@ -57,7 +57,7 @@ namespace Damdor.VisualStates
         /// </summary>
         /// <param name="stateId">The unique identifier of the state.</param>
         /// <returns>The configured value for the state.</returns>
-        StorageValue<TValue> GetValue(int stateId);
+        VarioValue<TValue> GetValue(int stateId);
         
         /// <summary>
         /// Checks if a specific override exists for the given state ID.
@@ -85,19 +85,19 @@ namespace Damdor.VisualStates
         /// <summary>
         /// Gets or sets the target component to be modified by this parameter.
         /// </summary>
-        StorageValue<TComponent> Target { get; set; }
+        VarioValue<TComponent> Target { get; set; }
         
         /// <summary>
         /// Gets or sets the default value to apply when no specific state override is active.
         /// </summary>
-        StorageValue<TValue, TSerializedValue> DefaultValue { get; set; }
+        VarioValue<TValue, TSerializedValue> DefaultValue { get; set; }
         
         /// <summary>
         /// Sets an override value for a specific state ID.
         /// </summary>
         /// <param name="stateId">The unique identifier of the state.</param>
         /// <param name="value">The value to apply when this state is active.</param>
-        void SetValue(int stateId, StorageValue<TValue, TSerializedValue> value);
+        void SetValue(int stateId, VarioValue<TValue, TSerializedValue> value);
         
         /// <summary>
         /// Retrieves the configured value for a specific state ID.
@@ -105,7 +105,7 @@ namespace Damdor.VisualStates
         /// </summary>
         /// <param name="stateId">The unique identifier of the state.</param>
         /// <returns>The configured value for the state.</returns>
-        StorageValue<TValue, TSerializedValue> GetValue(int stateId);
+        VarioValue<TValue, TSerializedValue> GetValue(int stateId);
         
         /// <summary>
         /// Checks if a specific override exists for the given state ID.

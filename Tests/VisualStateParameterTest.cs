@@ -1,4 +1,4 @@
-using Damdor.VariableStorage;
+using Damdor.Vario;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -31,7 +31,7 @@ namespace Damdor.VisualStates.Tests
             gameObject = new GameObject();
             component = gameObject.AddComponent<TestComponent>();
             parameter = new TestVisualStateParameter();
-            parameter.Target = new StorageValue<TestComponent> { Value = component, Source = ValueSource.Raw };
+            parameter.Target = new VarioValue<TestComponent> { Value = component, Source = ValueSource.Raw };
             lifecycle = parameter;
         }
 
@@ -44,7 +44,7 @@ namespace Damdor.VisualStates.Tests
         [Test]
         public void LoadDefaultValue_SetsComponentToDefault()
         {
-            parameter.DefaultValue = new StorageValue<int> { Value = 10, Source = ValueSource.Raw };
+            parameter.DefaultValue = new VarioValue<int> { Value = 10, Source = ValueSource.Raw };
             lifecycle.LoadDefaultValue();
             Assert.AreEqual(10, component.Value);
         }
@@ -52,8 +52,8 @@ namespace Damdor.VisualStates.Tests
         [Test]
         public void LoadValue_StateExists_SetsValue()
         {
-            parameter.DefaultValue = new StorageValue<int> { Value = 10, Source = ValueSource.Raw };
-            parameter.SetValue(1, new StorageValue<int> { Value = 20, Source = ValueSource.Raw });
+            parameter.DefaultValue = new VarioValue<int> { Value = 10, Source = ValueSource.Raw };
+            parameter.SetValue(1, new VarioValue<int> { Value = 20, Source = ValueSource.Raw });
 
             lifecycle.LoadValue(1);
             Assert.AreEqual(20, component.Value);
@@ -62,7 +62,7 @@ namespace Damdor.VisualStates.Tests
         [Test]
         public void LoadValue_StateDoesNotExist_SetsDefaultValue()
         {
-            parameter.DefaultValue = new StorageValue<int> { Value = 10, Source = ValueSource.Raw };
+            parameter.DefaultValue = new VarioValue<int> { Value = 10, Source = ValueSource.Raw };
             lifecycle.LoadValue(99);
             Assert.AreEqual(10, component.Value);
         }
@@ -80,7 +80,7 @@ namespace Damdor.VisualStates.Tests
             
             component.Value = 0;
             
-            parameter.DefaultValue = new StorageValue<int> { Value = 100, Source = ValueSource.Raw };
+            parameter.DefaultValue = new VarioValue<int> { Value = 100, Source = ValueSource.Raw };
             
             lifecycle.LoadValue(0, 0.5f);
             Assert.AreEqual(75, component.Value);
@@ -89,9 +89,9 @@ namespace Damdor.VisualStates.Tests
         [Test]
         public void NotifyStateRemoved_RemovesStateAndShiftsIndices()
         {
-            parameter.SetValue(0, new StorageValue<int> { Value = 10 });
-            parameter.SetValue(1, new StorageValue<int> { Value = 20 }); // To be removed
-            parameter.SetValue(2, new StorageValue<int> { Value = 30 }); // Should shift to 1
+            parameter.SetValue(0, new VarioValue<int> { Value = 10 });
+            parameter.SetValue(1, new VarioValue<int> { Value = 20 }); // To be removed
+            parameter.SetValue(2, new VarioValue<int> { Value = 30 }); // Should shift to 1
 
             lifecycle.NotifyStateRemoved(1);
 
@@ -108,7 +108,7 @@ namespace Damdor.VisualStates.Tests
         public void NotifyStateChanged_MoveUp_ShiftsIndicesCorrectly()
         {
             // Initial: [10:100]
-            parameter.SetValue(10, new StorageValue<int> { Value = 100 });
+            parameter.SetValue(10, new VarioValue<int> { Value = 100 });
             
             // Move 10 to 20
             lifecycle.NotifyStateChanged(10, 20);
@@ -121,8 +121,8 @@ namespace Damdor.VisualStates.Tests
         [Test]
         public void SetValue_UpdatesExistingState()
         {
-            parameter.SetValue(1, new StorageValue<int> { Value = 10 });
-            parameter.SetValue(1, new StorageValue<int> { Value = 20 });
+            parameter.SetValue(1, new VarioValue<int> { Value = 10 });
+            parameter.SetValue(1, new VarioValue<int> { Value = 20 });
 
             Assert.AreEqual(20, parameter.GetValue(1).Value);
         }
@@ -130,7 +130,7 @@ namespace Damdor.VisualStates.Tests
         [Test]
         public void RemoveOverride_RemovesState()
         {
-            parameter.SetValue(1, new StorageValue<int> { Value = 10 });
+            parameter.SetValue(1, new VarioValue<int> { Value = 10 });
             parameter.RemoveOverride(1);
 
             Assert.IsFalse(parameter.HasOverride(1));

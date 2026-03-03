@@ -1,6 +1,6 @@
 using System;
 using Damdor.Foundation;
-using Damdor.VariableStorage;
+using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.VisualStates
@@ -10,7 +10,7 @@ namespace Damdor.VisualStates
     {
         public int InitialStateId;
         public int TargetStateId;
-        public StorageValue<TimeSpan, SerializableTimeSpan> Duration;
-        public StorageValue<AnimationCurve> Easing;
+        public VarioValue<TimeSpan, SerializableTimeSpan> Duration;
+        public VarioValue<AnimationCurve> Easing;
     }
 }

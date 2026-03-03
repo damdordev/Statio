@@ -1,4 +1,4 @@
-using Damdor.VariableStorage;
+using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.VisualStates
@@ -15,6 +15,6 @@ namespace Damdor.VisualStates
             else target.position = value;
         }
 
-        [SerializeField] private StorageValue<bool> local = new() { Value = true };
+        [SerializeField] private VarioValue<bool> local = new() { Value = true };
     }
 }

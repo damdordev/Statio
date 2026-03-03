@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Damdor.VariableStorage;
+using Damdor.Vario;
 using Object = UnityEngine.Object;
 
 namespace Damdor.VisualStates
 {
-    public class VisualState : MonoBehaviour, IVariableStorageSource
+    public class VisualState : MonoBehaviour, IVarioStorageSource
     {
-        public VariableStorage.VariableStorage Storage => storage;
+        public Vario.VarioStorage Storage => storage;
         public IReadOnlyList<string> States => states;
         public string CurrentState => currentStateId >= 0 && currentStateId < states.Count ? states[currentStateId] : "";
 
@@ -25,8 +25,8 @@ namespace Damdor.VisualStates
         }
         
         [SerializeField] private List<string> states;
-        [SerializeField] private VariableStorage.VariableStorage storage;
-        [SerializeReference] private List<IVisualStateParameterLifecycle> parameters;
+        [SerializeField] private Vario.VarioStorage storage;
+        [SerializeReference] private List<IVisualStateParameterLifecycle> parameters = new();
         [SerializeField] private int initialStateId = -1;
         [SerializeField] private List<VisualStateAnimation> animations;
         [SerializeField] private VisualStateTimescale timescale;
