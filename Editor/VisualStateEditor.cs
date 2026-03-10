@@ -269,7 +269,10 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.onAddDropdownCallback += (rect, _) =>
             {
-                property.InsertArrayElementAtIndex(property.arraySize);
+                var index = property.arraySize;
+                property.InsertArrayElementAtIndex(index);
+                property.GetArrayElementAtIndex(index).FindPropertyRelative("InitialStateId").intValue = -1;
+                property.GetArrayElementAtIndex(index).FindPropertyRelative("TargetStateId").intValue = -1;
             };
             
             propertyPathToReorderableList[property.propertyPath] = reorderableList;
