@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Damdor.Foundation;
 using Damdor.Vario;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -184,7 +185,9 @@ namespace Damdor.VisualStates
 
         protected abstract TValue GetValue(TComponent target);
         protected abstract void SetValue(TComponent target, TValue value);
-        protected virtual TValue Lerp(TValue a, TValue b, float t) => t >= 0.5f ? a : b;
+
+        protected virtual TValue Lerp(TValue a, TValue b, float t)
+            => NumericOperations.Get<TValue>().LerpUnclamped(a, b, t);
 
         private TComponent ResolveTarget()
         {
@@ -365,8 +368,9 @@ namespace Damdor.VisualStates
 
         protected abstract TValue GetValue(TComponent target);
         protected abstract void SetValue(TComponent target, TValue value);
-        protected virtual TValue Lerp(TValue a, TValue b, float t) => t >= 0.5f ? a : b;
 
+        protected virtual TValue Lerp(TValue a, TValue b, float t)
+            => NumericOperations.Get<TValue>().LerpUnclamped(a, b, t);
         private TComponent ResolveTarget()
         {
             if (storage == null) return target.Value;

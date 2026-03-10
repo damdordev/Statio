@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Damdor.VisualStates
 {
     [VisualParameterTypeName("VisualState/State")]
-    public class VisualStateVisualStateParameter : StringVisualStateParameter<VisualState>
+    public class VisualStateVisualStateParameter : VisualStateParameter<VisualState, string>
     {
         protected override string GetValue(VisualState target) => target.CurrentState;
 
@@ -13,6 +13,8 @@ namespace Damdor.VisualStates
             if (ResolveValue(animate)) target.ChangeState(value);
             else target.ChangeStateImmediately(value);
         }
+        
+        protected override string Lerp(string a, string b, float t) => t >= 0.5f ? a : b;
 
         [SerializeField] private VarioValue<bool> animate;
     }

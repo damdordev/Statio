@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Damdor.VisualStates
 {
     [VisualParameterTypeName("Transform/Position")]
-    public class PositionVisualStateParameter : Vector3VisualStateParameter<Transform>
+    public class PositionVisualStateParameter : VisualStateParameter<Transform, Vector3>
     {
         protected override Vector3 GetValue(Transform target) =>
             ResolveValue(local) ? target.localPosition : target.position;

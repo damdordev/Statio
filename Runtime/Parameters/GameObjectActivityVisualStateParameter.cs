@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Damdor.VisualStates
 {
     [VisualParameterTypeName("GameObject/Active")]
-    public class GameObjectActivityVisualStateParameter : BoolVisualStateParameter<GameObject>
+    public class GameObjectActivityVisualStateParameter : VisualStateParameter<GameObject, bool>
     {
         protected override bool GetValue(GameObject target) => target.activeSelf;
         protected override void SetValue(GameObject target, bool value) => target.SetActive(value);
