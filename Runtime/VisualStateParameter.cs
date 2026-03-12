@@ -191,20 +191,17 @@ namespace Damdor.VisualStates
 
         private TComponent ResolveTarget()
         {
-            if (storage == null) return target.Value;
-            return storage.Evaluate(target); 
+            return target.Evaluate(storage); 
         }
 
         protected T ResolveValue<T>(VarioValue<T> storageValue)
         {
-            if (storage == null) return storageValue.Value;
-            return storage.Evaluate(storageValue);
+            return storageValue.Evaluate(storage);
         }
         
         protected T ResolveValue<T, TSerialized>(VarioValue<T, TSerialized> storageValue)
         {
-            if (storage == null) return storageValue.Value;
-            return storage.Evaluate(storageValue);
+            return storageValue.Evaluate(storage);
         }
     }
     
@@ -374,19 +371,19 @@ namespace Damdor.VisualStates
         private TComponent ResolveTarget()
         {
             if (storage == null) return target.Value;
-            return storage.Evaluate(target); 
+            return target.Evaluate(storage); 
         }
 
         protected T ResolveValue<T>(VarioValue<T> storageValue)
         {
             if (storage == null) return storageValue.Value;
-            return storage.Evaluate(storageValue);
+            return storageValue.Evaluate(storage);
         }
         
         protected T ResolveValue<T, TSerialized>(VarioValue<T, TSerialized> storageValue)
         {
             if (storage == null) return storageValue.Value;
-            return storage.Evaluate(storageValue);
+            return storageValue.Evaluate(storage);
         }
     }
 

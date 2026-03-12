@@ -121,7 +121,7 @@ namespace Damdor.VisualStates
                 var animation = GetAnimation(currentStateId, newStateId);
                 currentStateId = newStateId;
 
-                var time = (float)storage.Evaluate(animation.Duration).TotalSeconds;
+                var time = (float)animation.Duration.Evaluate(storage).TotalSeconds;
                 if (time <= 0f) animate = false;
                 
                 if (animate)
@@ -132,7 +132,7 @@ namespace Damdor.VisualStates
                         CurrentTime = 0f,
                         FullTime = time,
                         TargetState = newStateId,
-                        Easing = storage.Evaluate(animation.Easing)
+                        Easing = animation.Easing.Evaluate(storage)
                     };
 
                     for (var index = 0; index < parameters.Count; index++)
