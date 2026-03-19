@@ -10,7 +10,7 @@ namespace Damdor.VisualStates
     {
         public int InitialStateId;
         public int TargetStateId;
-        public VarioValue<TimeSpan, SerializableTimeSpan> Duration;
+        public VarioValue<float> Duration;
         public VarioValue<AnimationCurve> Easing;
     }
 }

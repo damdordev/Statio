@@ -8,7 +8,7 @@ namespace Damdor.VisualStates
 {
     public class VisualState : MonoBehaviour, IVarioStorageSource
     {
-        public Vario.VarioStorage Storage => storage;
+        public VarioStorage Storage => storage;
         public IReadOnlyList<string> States => states;
         public string CurrentState => currentStateId >= 0 && currentStateId < states.Count ? states[currentStateId] : "";
 
@@ -87,12 +87,6 @@ namespace Damdor.VisualStates
             parameters.Add(parameter);
         }
         
-        public void AddParameter<TComponent, TValue, TSerializedValue>(VisualStateParameter<TComponent, TSerializedValue, TValue> parameter)
-            where TComponent : Object
-        {
-            parameters.Add(parameter);
-        }
-        
         public void ChangeState(string state)
         {
             var stateID = states.IndexOf(state);
@@ -121,7 +115,7 @@ namespace Damdor.VisualStates
                 var animation = GetAnimation(currentStateId, newStateId);
                 currentStateId = newStateId;
 
-                var time = (float)animation.Duration.Evaluate(storage).TotalSeconds;
+                var time = animation.Duration.Evaluate(storage);
                 if (time <= 0f) animate = false;
                 
                 if (animate)
