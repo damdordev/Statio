@@ -1,7 +1,7 @@
 {
-  "name": "com.damdor.visualstates",
+  "name": "com.damdor.statio",
   "version": "1.0.0",
-  "displayName": "Visual states",
+  "displayName": "Statio",
   "description": "",
   "unity": "2022.3",
   "publishConfig": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/damdordev/Traduio.git"
+    "url": "https://github.com/damdordev/Statio.git"
   },
   "dependencies": {
     "com.damdor.vario": "1.0.0",

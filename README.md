@@ -1,4 +1,4 @@
-# Visual States
+# Statio
 
 A powerful state management system for Unity that allows you to define, transition, and animate between different visual configurations of your GameObjects.
 
@@ -78,8 +78,8 @@ using Damdor.VisualStates;
 
 // 1. Define the parameter class
 [Serializable]
-[VisualParameterTypeName("CanvasGroup Alpha")] // Name shown in the add menu
-public class CanvasGroupAlphaParameter : VisualStateParameter<CanvasGroup, float>
+[StatioParameterName("CanvasGroup Alpha")] // Name shown in the add menu
+public class CanvasGroupAlphaParameter : StatioParameter<CanvasGroup, float>
 {
     // 2. Implement how to get the value from the component
     protected override float GetValue(CanvasGroup target) => target.alpha;
@@ -93,7 +93,7 @@ public class CanvasGroupAlphaParameter : VisualStateParameter<CanvasGroup, float
 ```
 
 ```csharp
-public class VisualStateIntegration : MonoBehaviour
+public class StatioIntegration : MonoBehaviour
 {
     #if UNITY_EDITOR
     [UnityEditor.Callbacks.DidReloadScripts]
@@ -110,9 +110,8 @@ public class VisualStateIntegration : MonoBehaviour
 
     private static void Integrate()
     {
-        VisualStateSettings.ResetToInitialSettings();
-        VisualStateSettings.RegisterParameterType(typeof(CanvasGroupAlphaParameter));
-        VariableStorageSettings.RegisterGlobalStorage(DefaultGlobalVariableStorage.Easing);
+        StatioSettings.ResetToInitialSettings();
+        StatioSettings.RegisterParameterType(typeof(CanvasGroupAlphaParameter));
     }
     
 }

@@ -1,0 +1,19 @@
+{
+    "name": "Statio.Editor",
+    "rootNamespace": "Damdor.Statio.Editor",
+    "references": [
+        "GUID:cfbdcf40d87d097818ca6d5ee5b5b405",
+        "GUID:a1d795e18ee581b089339fc65ea4e4ac"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

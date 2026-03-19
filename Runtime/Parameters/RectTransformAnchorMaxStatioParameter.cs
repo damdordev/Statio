@@ -1,0 +1,11 @@
+using UnityEngine;
+
+namespace Damdor.Statio
+{
+    [StatioParameterName("RectTransform/AnchorMax")]
+    public class RectTransformAnchorMaxStatioParameter : StatioParameter<RectTransform, Vector2>
+    {
+        protected override Vector2 GetValue(RectTransform target) => target.anchorMax;
+        protected override void SetValue(RectTransform target, Vector2 value) => target.anchorMax = value;
+    }
+}

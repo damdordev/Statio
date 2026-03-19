@@ -4,7 +4,7 @@ using UnityEngine;
 using Damdor.Vario;
 using Object = UnityEngine.Object;
 
-namespace Damdor.VisualStates
+namespace Damdor.Statio
 {
     public class VisualState : MonoBehaviour, IVarioStorageSource
     {
@@ -18,7 +18,7 @@ namespace Damdor.VisualStates
             set => initialStateId = states.IndexOf(value);
         }
         
-        public VisualStateTimescale Timescale
+        public StatioTimescale Timescale
         {
             get => timescale;
             set => timescale = value;
@@ -26,26 +26,26 @@ namespace Damdor.VisualStates
         
         [SerializeField] private List<string> states;
         [SerializeField] private Vario.VarioStorage storage;
-        [SerializeReference] private List<IVisualStateParameterLifecycle> parameters = new();
+        [SerializeReference] private List<IStatioParameterLifecycle> parameters = new();
         [SerializeField] private int initialStateId = -1;
-        [SerializeField] private List<VisualStateAnimation> animations;
-        [SerializeField] private VisualStateTimescale timescale;
+        [SerializeField] private List<StatioAnimation> animations;
+        [SerializeField] private StatioTimescale timescale;
 
         private int currentStateId = -1;
         private int stateIdToSetAfterEnable = -1;
         private bool animateAfterEnable;
-        private VisualStateAnimationProgress animationProgress;
+        private StatioAnimationProgress animationProgress;
 
         public void AddState(string state)
         {
             if (string.IsNullOrEmpty(state))
             {
-                VisualStateSettings.NotifyError(this, "Trying to add empty state");
+                StatioSettings.NotifyError(this, "Trying to add empty state");
                 return;
             }
             if (states.Contains(state))
             {
-                VisualStateSettings.NotifyError(this, $"Trying to add existing state: {state}");
+                StatioSettings.NotifyError(this, $"Trying to add existing state: {state}");
                 return;
             }
             states.Add(state);
@@ -56,13 +56,13 @@ namespace Damdor.VisualStates
             var removedStateId = states.IndexOf(state);
             if (removedStateId == -1)
             {
-                VisualStateSettings.NotifyError(this, $"Trying to remove non-existing state: {state}");
+                StatioSettings.NotifyError(this, $"Trying to remove non-existing state: {state}");
                 return;
             }
             states.RemoveAt(removedStateId);
             
             foreach (var parameter in parameters) parameter.NotifyStateRemoved(removedStateId);
-            initialStateId = VisualStateHelper.RecalculateStateIdAfterStateRemoved(removedStateId, initialStateId);
+            initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, initialStateId);
         }
 
         public void ChangeStateId(string state, int newStateId)
@@ -70,7 +70,7 @@ namespace Damdor.VisualStates
             var oldStateId = states.IndexOf(state);
             if (oldStateId == -1)
             {
-                VisualStateSettings.NotifyError(this, $"Trying to move non-existing state: {state}");
+                StatioSettings.NotifyError(this, $"Trying to move non-existing state: {state}");
                 return;
             }
 
@@ -78,10 +78,10 @@ namespace Damdor.VisualStates
             states.Insert(newStateId, state);
             
             foreach (var parameter in parameters) parameter.NotifyStateChanged(oldStateId, newStateId);
-            initialStateId = VisualStateHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, initialStateId);
+            initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, initialStateId);
         }
 
-        public void AddParameter<TComponent, TValue>(VisualStateParameter<TComponent, TValue> parameter)
+        public void AddParameter<TComponent, TValue>(StatioParameter<TComponent, TValue> parameter)
             where TComponent : Object
         {
             parameters.Add(parameter);
@@ -92,7 +92,7 @@ namespace Damdor.VisualStates
             var stateID = states.IndexOf(state);
             if (stateID == -1)
             {
-                VisualStateSettings.NotifyError(this, $"Trying to change to non existing state: {state}");
+                StatioSettings.NotifyError(this, $"Trying to change to non existing state: {state}");
             }
 
             ChangeState(GetStateId(state), true);
@@ -120,7 +120,7 @@ namespace Damdor.VisualStates
                 
                 if (animate)
                 {
-                    animationProgress = new VisualStateAnimationProgress
+                    animationProgress = new StatioAnimationProgress
                     {
                         Running = true,
                         CurrentTime = 0f,
@@ -138,13 +138,13 @@ namespace Damdor.VisualStates
                         }
                         catch (Exception e)
                         {
-                            VisualStateSettings.NotifyError(this, $"Error on saving snapshot, parameter {index}:\n{e}");
+                            StatioSettings.NotifyError(this, $"Error on saving snapshot, parameter {index}:\n{e}");
                         }
                     }
                 }
                 else
                 {
-                    animationProgress = new VisualStateAnimationProgress { Running = false };
+                    animationProgress = new StatioAnimationProgress { Running = false };
                     for (var index = 0; index < parameters.Count; index++)
                     {
                         var parameter = parameters[index];
@@ -154,7 +154,7 @@ namespace Damdor.VisualStates
                         }
                         catch (Exception e)
                         {
-                            VisualStateSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
+                            StatioSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
                         }
                     }
                 }
@@ -193,7 +193,7 @@ namespace Damdor.VisualStates
 
         protected virtual void Update()
         {
-            UpdateTime(timescale == VisualStateTimescale.Normal ? Time.deltaTime : Time.unscaledDeltaTime);
+            UpdateTime(timescale == StatioTimescale.Normal ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         private void AssignStoragesToParameters()
@@ -233,7 +233,7 @@ namespace Damdor.VisualStates
                 }
                 catch (Exception e)
                 {
-                    VisualStateSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
+                    StatioSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
                 }
             }
         }
@@ -249,13 +249,13 @@ namespace Damdor.VisualStates
                 }
                 catch (Exception e)
                 {
-                    VisualStateSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
+                    StatioSettings.NotifyError(this, $"Error on loading value, parameter {index}:\n{e}");
 
                 }
             }
         }
 
-        private VisualStateAnimation GetAnimation(int initialStateId, int targetStateId)
+        private StatioAnimation GetAnimation(int initialStateId, int targetStateId)
         {
             foreach (var a in animations)
             {
@@ -274,7 +274,7 @@ namespace Damdor.VisualStates
                 return a;
             }
 
-            return new VisualStateAnimation();
+            return new StatioAnimation();
         }
 
         private bool AcceptState(int state, int condition) => condition == -1 || state == condition;
@@ -284,7 +284,7 @@ namespace Damdor.VisualStates
             var stateId = states.IndexOf(state);
             if (stateId == -1)
             {
-                VisualStateSettings.NotifyError(this, $"Trying to get non existing state: {state}");
+                StatioSettings.NotifyError(this, $"Trying to get non existing state: {state}");
             }
             return stateId;
         }

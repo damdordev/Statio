@@ -7,7 +7,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Damdor.VisualStates.Editor
+namespace Damdor.Statio.Editor
 {
     [CustomEditor(typeof(VisualState), true)]
     public class VisualStateEditor : UnityEditor.Editor
@@ -54,7 +54,7 @@ namespace Damdor.VisualStates.Editor
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Initial state", GUILayout.ExpandWidth(false), GUILayout.Width(100));
 
-            VisualStateEditorHelper.ShowStateChoice(visualState, initialStateProperty.intValue, "-----", newStateId =>
+            StatioEditorHelper.ShowStateChoice(visualState, initialStateProperty.intValue, "-----", newStateId =>
             {
                 initialStateProperty.intValue = newStateId;
                 serializedObject.ApplyModifiedProperties();
@@ -115,7 +115,7 @@ namespace Damdor.VisualStates.Editor
                 );
                 if (oldValue == newValue) return;
                 
-                if (!VisualStateEditorHelper.HasState(property, newValue))
+                if (!StatioEditorHelper.HasState(property, newValue))
                 {
                     elementProperty.stringValue = newValue;
                     property.serializedObject.ApplyModifiedProperties();
@@ -129,7 +129,7 @@ namespace Damdor.VisualStates.Editor
             {
                 var newIndex = property.arraySize;
                 property.InsertArrayElementAtIndex(newIndex);
-                property.GetArrayElementAtIndex(newIndex).stringValue = VisualStateEditorHelper.GetNewStateName(property);
+                property.GetArrayElementAtIndex(newIndex).stringValue = StatioEditorHelper.GetNewStateName(property);
                 property.serializedObject.ApplyModifiedProperties();
             };
 
@@ -185,8 +185,8 @@ namespace Damdor.VisualStates.Editor
 
             reorderableList.onAddDropdownCallback += (rect, _) =>
             {
-                var types = VisualStateSettings.SupportedParameterTypes.OrderBy(VisualStateEditorHelper.GetParameterTypeName).ToList();
-                new HierarchicalDropdown<Type>(types, VisualStateEditorHelper.GetParameterTypeName, type =>
+                var types = StatioSettings.SupportedParameterTypes.OrderBy(StatioEditorHelper.GetParameterTypeName).ToList();
+                new HierarchicalDropdown<Type>(types, StatioEditorHelper.GetParameterTypeName, type =>
                 {
                     property.InsertArrayElementAtIndex(property.arraySize);
                     var element = property.GetArrayElementAtIndex(property.arraySize - 1);
@@ -227,7 +227,7 @@ namespace Damdor.VisualStates.Editor
                     rect.width / 2f - 10f,
                     EditorGUIUtility.singleLineHeight
                 );
-                VisualStateEditorHelper.ShowStateChoice(initialStateIdRect, visualState, initialStateIdProperty.intValue, "*", newStateId =>
+                StatioEditorHelper.ShowStateChoice(initialStateIdRect, visualState, initialStateIdProperty.intValue, "*", newStateId =>
                 {
                     initialStateIdProperty.intValue = newStateId;
                     property.serializedObject.ApplyModifiedProperties();
@@ -240,7 +240,7 @@ namespace Damdor.VisualStates.Editor
                     rect.width / 2f - 10f,
                     EditorGUIUtility.singleLineHeight
                 );
-                VisualStateEditorHelper.ShowStateChoice(targetStateIdRect, visualState, targetStateIdProperty.intValue, "*", newStateId =>
+                StatioEditorHelper.ShowStateChoice(targetStateIdRect, visualState, targetStateIdProperty.intValue, "*", newStateId =>
                 {
                     targetStateIdProperty.intValue = newStateId;
                     property.serializedObject.ApplyModifiedProperties();
