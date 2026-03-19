@@ -12,7 +12,6 @@
     "url": "https://github.com/damdordev/Statio.git"
   },
   "dependencies": {
-    "com.damdor.vario": "1.0.0",
-    "com.cysharp.unitask.compatible": "2.3.1"
+    "com.damdor.vario": "1.0.0"
   }
 }

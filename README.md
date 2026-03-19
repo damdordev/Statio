@@ -121,4 +121,3 @@ public class StatioIntegration : MonoBehaviour
 
 *   `com.damdor.foundations`
 *   `com.damdor.variablestorage`
-*   `com.cysharp.unitask`
