@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("GameObject/Active")]
+    [Serializable]
     public class GameObjectActivityStatioParameter : StatioParameter<GameObject, bool>
     {
         protected override bool GetValue(GameObject target) => target.activeSelf;

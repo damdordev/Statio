@@ -1,9 +1,10 @@
+using System;
 using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("VisualState/State")]
+    [Serializable]
     public class StatioStatioParameter : StatioParameter<VisualState, string>
     {
         protected override string GetValue(VisualState target) => target.CurrentState;

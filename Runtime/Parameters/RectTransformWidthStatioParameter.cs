@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("RectTransform/Width")]
+    [Serializable]
     public class RectTransformWidthStatioParameter : StatioParameter<RectTransform, float>
     {
         protected override float GetValue(RectTransform target) => target.rect.width;

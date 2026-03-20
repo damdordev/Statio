@@ -69,7 +69,7 @@ You can define transition rules between states in the `VisualState` component.
 
 ## Creating Custom Parameters
 
-To control a custom component or property, inherit from `VisualStateParameter<TComponent, TValue>`.
+To control a custom component or property, inherit from `StatioParameter<TComponent, TValue>`.
 
 ```csharp
 using System;
@@ -77,43 +77,29 @@ using UnityEngine;
 using Damdor.Statio;
 
 // 1. Define the parameter class
-[Serializable]
-[StatioParameterName("CanvasGroup Alpha")] // Name shown in the add menu
-public class CanvasGroupAlphaParameter : StatioParameter<CanvasGroup, float>
+namespace MyNamespace 
 {
-    // 2. Implement how to get the value from the component
-    protected override float GetValue(CanvasGroup target) => target.alpha;
-
-    // 3. Implement how to set the value to the component
-    protected override void SetValue(CanvasGroup target, float value) => target.alpha = value;
-
-    // 4. Implement interpolation logic
-    protected override float Lerp(float a, float b, float t) => Mathf.Lerp(a, b, t);
+    [Serializable]
+    public class MyCustomParameter : StatioParameter<CanvasGroup, float>
+    {
+        // 2. Implement how to get the value from the component
+        protected override float GetValue(CanvasGroup target) => target.alpha;
+    
+        // 3. Implement how to set the value to the component
+        protected override void SetValue(CanvasGroup target, float value) => target.alpha = value;
+    
+        // 4. Implement interpolation logic
+        protected override float Lerp(float a, float b, float t) => Mathf.Lerp(a, b, t);
+    }
 }
 ```
 
-```csharp
-public class StatioIntegration : MonoBehaviour
+then create file `statio_settings.json` in `Resources` file and register this parameter:
+```json
 {
-    #if UNITY_EDITOR
-    [UnityEditor.Callbacks.DidReloadScripts]
-    private static void OnScriptsReloaded()
-    {
-        Integrate();
-    }
-    #endif
-    
-    private void Awake()
-    {
-        Integrate();
-    }
-
-    private static void Integrate()
-    {
-        StatioSettings.ResetToInitialSettings();
-        StatioSettings.RegisterParameterType(typeof(CanvasGroupAlphaParameter));
-    }
-    
+  "parameters": {
+    "myCustomName": "MyNamespace.MyCustomParameter"
+  }
 }
 ```
 

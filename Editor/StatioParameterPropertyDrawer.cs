@@ -131,7 +131,7 @@ namespace Damdor.Statio.Editor
         {
             var value = property.managedReferenceValue;
             var label = value != null
-                ? new GUIContent(StatioEditorHelper.GetParameterTypeName(value.GetType()))
+                ? new GUIContent(StatioSettings.GetParameterTypeName(value.GetType()))
                 : defaultLabel;
 
             property.isExpanded = EditorGUI.Foldout(

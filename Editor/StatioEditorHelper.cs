@@ -29,17 +29,6 @@ namespace Damdor.Statio.Editor
             return false;
         }
         
-        public static string GetParameterTypeName(Type type)
-        {
-            if(variableTypeToName.TryGetValue(type, out var result)) return result;
-
-            var attr = type.GetCustomAttribute<StatioParameterName>();
-            var name = attr != null ? attr.Name : type.Name;
-            variableTypeToName[type] = name;
-
-            return name;
-        }
-        
         public static void ShowStateChoice(VisualState visualState, int stateId, string emptyStateName, Action<int> onChange)
         {
             var text = stateId < 0 ? emptyStateName : visualState.States[stateId];

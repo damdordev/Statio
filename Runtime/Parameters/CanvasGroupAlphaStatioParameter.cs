@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("CanvasGroup/Alpha")]
+    [Serializable]
     public class CanvasGroupAlphaStatioParameter : StatioParameter<CanvasGroup, float>
     {
         protected override float GetValue(CanvasGroup target) => target.alpha;

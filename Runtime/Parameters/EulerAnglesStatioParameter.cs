@@ -1,9 +1,10 @@
+using System;
 using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("Transform/EulerAngles")]
+    [Serializable]
     public class EulerAnglesStatioParameter : StatioParameter<Transform, Vector3>
     {
         protected override Vector3 GetValue(Transform target) =>

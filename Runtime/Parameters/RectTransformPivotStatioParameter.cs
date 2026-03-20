@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("RectTransform/Pivot")]
+    [Serializable]
     public class RectTransformPivotStatioParameter : StatioParameter<RectTransform, Vector2>
     {
         protected override Vector2 GetValue(RectTransform target) => target.pivot;

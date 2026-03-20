@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("RectTransform/AnchoredPosition")]
+    [Serializable]
     public class RectTransformAnchoredPositionStatioParameter : StatioParameter<RectTransform, Vector2>
     {
         protected override Vector2 GetValue(RectTransform target) => target.anchoredPosition;

@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("Transform/Scale")]
+    [Serializable]
     public class ScaleStatioParameter : StatioParameter<Transform, Vector3>
     {
         protected override Vector3 GetValue(Transform target) => target.localScale;

@@ -1,9 +1,10 @@
+using System;
 using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("Transform/Position")]
+    [Serializable]
     public class PositionStatioParameter : StatioParameter<Transform, Vector3>
     {
         protected override Vector3 GetValue(Transform target) =>

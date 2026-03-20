@@ -185,8 +185,8 @@ namespace Damdor.Statio.Editor
 
             reorderableList.onAddDropdownCallback += (rect, _) =>
             {
-                var types = StatioSettings.SupportedParameterTypes.OrderBy(StatioEditorHelper.GetParameterTypeName).ToList();
-                new HierarchicalDropdown<Type>(types, StatioEditorHelper.GetParameterTypeName, type =>
+                var types = StatioSettings.SupportedParameterTypes.OrderBy(StatioSettings.GetParameterTypeName).ToList();
+                new HierarchicalDropdown<Type>(types, StatioSettings.GetParameterTypeName, type =>
                 {
                     property.InsertArrayElementAtIndex(property.arraySize);
                     var element = property.GetArrayElementAtIndex(property.arraySize - 1);

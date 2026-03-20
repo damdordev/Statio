@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Damdor.Foundation;
+using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.Statio
@@ -24,15 +25,9 @@ namespace Damdor.Statio
 
         private static bool init;
         private static readonly List<Type> supportedParameterTypes = new();
+        private static readonly Dictionary<Type, string> parameterTypeToName = new();
         private static bool logErrorsToConsole;
         private static StatioErrorHandler errorHandler;
-        
-        public static void ResetToInitialSettings()
-        {
-            ResetSupportedParameterTypes();
-            init = true;
-            errorHandler = null;
-        }
 
         public static void RegisterErrorHandler(StatioErrorHandler handler)
         {
@@ -40,41 +35,53 @@ namespace Damdor.Statio
             errorHandler = handler;
         }
 
-        public static void RegisterParameterType(Type type)
+        internal static void Reset()
         {
-            EnsureInit();
+            init = false;
+            supportedParameterTypes.Clear();
+            parameterTypeToName.Clear();
+        }
+
+        internal static void RegisterParameterType(Type type, string name)
+        {
             supportedParameterTypes.Add(type);
+            parameterTypeToName[type] = name;
         }
-
-        private static void ClearSupportedParameterTypes()
-        {
-            supportedParameterTypes.Clear();
-        }
-
-        private static void ResetSupportedParameterTypes()
-        {
-            supportedParameterTypes.Clear();
-            
-            supportedParameterTypes.Add(typeof(PositionStatioParameter));
-            supportedParameterTypes.Add(typeof(ScaleStatioParameter));
-            supportedParameterTypes.Add(typeof(GraphicColorStatioParameter));
-            supportedParameterTypes.Add(typeof(GameObjectActivityStatioParameter));
-            supportedParameterTypes.Add(typeof(TransformParentStatioParameter));
-            supportedParameterTypes.Add(typeof(StatioStatioParameter));
-            supportedParameterTypes.Add(typeof(EulerAnglesStatioParameter));
-            supportedParameterTypes.Add(typeof(RectTransformWidthStatioParameter));
-            supportedParameterTypes.Add(typeof(RectTransformHeightStatioParameter));
-            supportedParameterTypes.Add(typeof(RectTransformPivotStatioParameter));
-            supportedParameterTypes.Add(typeof(RectTransformAnchoredPositionStatioParameter));
-            supportedParameterTypes.Add(typeof(RectTransformAnchorMinStatioParameter));
-            supportedParameterTypes.Add(typeof(RectTransformAnchorMaxStatioParameter));
-            supportedParameterTypes.Add(typeof(CanvasGroupAlphaStatioParameter));
-        }
+        
+        // private static void ResetSupportedParameterTypes()
+        // {
+        //     supportedParameterTypes.Clear();
+        //     
+        //     supportedParameterTypes.Add(typeof(PositionStatioParameter));
+        //     supportedParameterTypes.Add(typeof(ScaleStatioParameter));
+        //     supportedParameterTypes.Add(typeof(GraphicColorStatioParameter));
+        //     supportedParameterTypes.Add(typeof(GameObjectActivityStatioParameter));
+        //     supportedParameterTypes.Add(typeof(TransformParentStatioParameter));
+        //     supportedParameterTypes.Add(typeof(StatioStatioParameter));
+        //     supportedParameterTypes.Add(typeof(EulerAnglesStatioParameter));
+        //     supportedParameterTypes.Add(typeof(RectTransformWidthStatioParameter));
+        //     supportedParameterTypes.Add(typeof(RectTransformHeightStatioParameter));
+        //     supportedParameterTypes.Add(typeof(RectTransformPivotStatioParameter));
+        //     supportedParameterTypes.Add(typeof(RectTransformAnchoredPositionStatioParameter));
+        //     supportedParameterTypes.Add(typeof(RectTransformAnchorMinStatioParameter));
+        //     supportedParameterTypes.Add(typeof(RectTransformAnchorMaxStatioParameter));
+        //     supportedParameterTypes.Add(typeof(CanvasGroupAlphaStatioParameter));
+        // }
         
         private static void EnsureInit()
         {
             if (init) return;
-            ResetToInitialSettings();
+            Reset();
+
+            StatioSettingsLoader.Load();
+            
+            init = true;
+        }
+        
+        public static string GetParameterTypeName(Type type)
+        {
+            var name = parameterTypeToName.GetValueOrDefault(type, "");
+            return name;
         }
 
         internal static void NotifyError(VisualState visualState, string error)

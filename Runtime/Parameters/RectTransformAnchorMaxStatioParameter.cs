@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Damdor.Statio
 {
-    [StatioParameterName("RectTransform/AnchorMax")]
+    [Serializable]
     public class RectTransformAnchorMaxStatioParameter : StatioParameter<RectTransform, Vector2>
     {
         protected override Vector2 GetValue(RectTransform target) => target.anchorMax;
