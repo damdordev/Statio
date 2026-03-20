@@ -31,7 +31,7 @@ Add the `VisualState` component to a GameObject.
 You can change states using the `VisualState` API.
 
 ```csharp
-using Damdor.VisualStates;
+using Damdor.Statio;
 using UnityEngine;
 
 public class ButtonController : MonoBehaviour
@@ -74,7 +74,7 @@ To control a custom component or property, inherit from `VisualStateParameter<TC
 ```csharp
 using System;
 using UnityEngine;
-using Damdor.VisualStates;
+using Damdor.Statio;
 
 // 1. Define the parameter class
 [Serializable]
