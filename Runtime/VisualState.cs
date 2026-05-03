@@ -23,12 +23,12 @@ namespace Damdor.Statio
             get => timescale;
             set => timescale = value;
         }
-        
-        [SerializeField] private List<string> states;
-        [SerializeField] private Vario.VarioStorage storage;
+
+        [SerializeField] private List<string> states = new();
+        [SerializeField] private VarioStorage storage;
         [SerializeReference] private List<IStatioParameterLifecycle> parameters = new();
         [SerializeField] private int initialStateId = -1;
-        [SerializeField] private List<StatioAnimation> animations;
+        [SerializeField] private List<StatioAnimation> animations = new();
         [SerializeField] private StatioTimescale timescale;
 
         private int currentStateId = -1;
@@ -63,6 +63,7 @@ namespace Damdor.Statio
             
             foreach (var parameter in parameters) parameter.NotifyStateRemoved(removedStateId);
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, initialStateId);
+            currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, currentStateId);
         }
 
         public void ChangeStateId(string state, int newStateId)
@@ -79,6 +80,7 @@ namespace Damdor.Statio
             
             foreach (var parameter in parameters) parameter.NotifyStateChanged(oldStateId, newStateId);
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, initialStateId);
+            currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, currentStateId);
         }
 
         public void AddParameter<TComponent, TValue>(StatioParameter<TComponent, TValue> parameter)
