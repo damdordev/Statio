@@ -26,7 +26,17 @@ Add the `VisualState` component to a GameObject.
     *   Set a **Default Value** for the parameter.
     *   Add overrides for specific states where the value should differ from the default.
 
-### 2. Controlling States from Code
+### 2. Using StatioButton
+
+`StatioButton` is a replacement for the default Unity UI `Button`. Instead of using fixed transition properties (like color tint or sprite swap), `StatioButton` leverages a `VisualState` component to handle its visual changes. This provides you with the flexibility to animate any parameter (color, position, scale, alpha, etc.) when the button state changes.
+
+1. Add a `StatioButton` component to a Canvas GameObject (can be added via `Component -> UI -> Statio Button`).
+2. Add a `VisualState` component on the same or a child GameObject.
+3. In the `VisualState`, define states such as `normal`, `pressed`, and `disabled`.
+4. In the `StatioButton` inspector, assign the `VisualState` component and map the states for Normal, Disabled, and Pressed interactions.
+5. Add parameters in the `VisualState` to define how the button looks in each of those states.
+
+### 3. Controlling States from Code
 
 You can change states using the `VisualState` API.
 
@@ -58,7 +68,7 @@ public class ButtonController : MonoBehaviour
 }
 ```
 
-### 3. Configuring Animations
+### 4. Configuring Animations
 
 You can define transition rules between states in the `VisualState` component.
 
@@ -106,4 +116,4 @@ then create file `statio_settings.json` in `Resources` file and register this pa
 ## Dependencies
 
 *   `com.damdor.foundations`
-*   `com.damdor.variablestorage`
+*   `com.damdor.vario`
