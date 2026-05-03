@@ -5,6 +5,7 @@ using UnityEngine.UI;
 namespace Damdor.Statio
 {
     [Serializable]
+    [StatioParameter("Graphic/Color")]
     public class GraphicColorStatioParameter : StatioParameter<Graphic, Color>
     {
         protected override Color GetValue(Graphic target) => target.color;

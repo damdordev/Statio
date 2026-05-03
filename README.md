@@ -90,6 +90,7 @@ using Damdor.Statio;
 namespace MyNamespace 
 {
     [Serializable]
+    [StatioParameter("Custom/MyParameter")]        
     public class MyCustomParameter : StatioParameter<CanvasGroup, float>
     {
         // 2. Implement how to get the value from the component
@@ -101,15 +102,6 @@ namespace MyNamespace
         // 4. Implement interpolation logic
         protected override float Lerp(float a, float b, float t) => Mathf.Lerp(a, b, t);
     }
-}
-```
-
-then create file `statio_settings.json` in `Resources` file and register this parameter:
-```json
-{
-  "parameters": {
-    "myCustomName": "MyNamespace.MyCustomParameter"
-  }
 }
 ```
 

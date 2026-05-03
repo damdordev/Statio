@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Damdor.Statio
 {
     [Serializable]
+    [StatioParameter("RectTransform/AnchorMin")]
     public class RectTransformAnchorMinStatioParameter : StatioParameter<RectTransform, Vector2>
     {
         protected override Vector2 GetValue(RectTransform target) => target.anchorMin;

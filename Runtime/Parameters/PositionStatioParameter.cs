@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Damdor.Statio
 {
     [Serializable]
+    [StatioParameter("Transform/Position")]
     public class PositionStatioParameter : StatioParameter<Transform, Vector3>
     {
         protected override Vector3 GetValue(Transform target) =>

@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Damdor.Statio
 {
     [Serializable]
+    [StatioParameter("Transform/Parent")]
     public class TransformParentStatioParameter : StatioParameter<Transform, Transform>
     {
         protected override Transform GetValue(Transform target) => target.parent;

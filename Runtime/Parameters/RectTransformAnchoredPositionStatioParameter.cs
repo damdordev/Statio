@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Damdor.Statio
 {
     [Serializable]
+    [StatioParameter("RectTransform/AnchoredPosition")]
     public class RectTransformAnchoredPositionStatioParameter : StatioParameter<RectTransform, Vector2>
     {
         protected override Vector2 GetValue(RectTransform target) => target.anchoredPosition;

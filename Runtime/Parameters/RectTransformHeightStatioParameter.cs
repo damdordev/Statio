@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Damdor.Statio
 {
     [Serializable]
+    [StatioParameter("RectTransform/Height")]
     public class RectTransformHeightStatioParameter : StatioParameter<RectTransform, float>
     {
         protected override float GetValue(RectTransform target) => target.rect.height;

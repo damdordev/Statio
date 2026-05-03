@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Damdor.Statio
 {
     [Serializable]
+    [StatioParameter("Statio/State")]
     public class StatioStatioParameter : StatioParameter<VisualState, string>
     {
         protected override string GetValue(VisualState target) => target.CurrentState;
