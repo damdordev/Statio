@@ -1,0 +1,15 @@
+#if DAMDOR_STATIO_UIEFFECT
+using System;
+using Coffee.UIEffects;
+
+namespace Damdor.Statio
+{
+    [Serializable]
+    [StatioParameter("UIEffect/PatternArea")]
+    public class UIEffectPatternAreaStatioParameter : StatioParameter<UIEffect, PatternArea>
+    {
+        protected override PatternArea GetValue(UIEffect target) => target.patternArea;
+        protected override void SetValue(UIEffect target, PatternArea value) => target.patternArea = value;
+    }
+}
+#endif
