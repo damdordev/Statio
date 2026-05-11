@@ -61,7 +61,10 @@ namespace Damdor.Statio
             }
             states.RemoveAt(removedStateId);
             
-            foreach (var parameter in parameters) parameter.NotifyStateRemoved(removedStateId);
+            foreach (var parameter in parameters) 
+            {
+                if (parameter != null) parameter.NotifyStateRemoved(removedStateId);
+            }
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, initialStateId);
             currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, currentStateId);
         }
@@ -78,7 +81,10 @@ namespace Damdor.Statio
             states.RemoveAt(oldStateId);
             states.Insert(newStateId, state);
             
-            foreach (var parameter in parameters) parameter.NotifyStateChanged(oldStateId, newStateId);
+            foreach (var parameter in parameters) 
+            {
+                if (parameter != null) parameter.NotifyStateChanged(oldStateId, newStateId);
+            }
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, initialStateId);
             currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, currentStateId);
         }
@@ -105,7 +111,7 @@ namespace Damdor.Statio
             ChangeState(GetStateId(state), false);
         }
 
-        private void ChangeState(int newStateId, bool animate)
+        public void ChangeState(int newStateId, bool animate)
         {
             AssignStoragesToParameters();
             
@@ -134,6 +140,7 @@ namespace Damdor.Statio
                     for (var index = 0; index < parameters.Count; index++)
                     {
                         var parameter = parameters[index];
+                        if (parameter == null) continue;
                         try
                         {
                             parameter.SaveSnapshot();
@@ -150,6 +157,7 @@ namespace Damdor.Statio
                     for (var index = 0; index < parameters.Count; index++)
                     {
                         var parameter = parameters[index];
+                        if (parameter == null) continue;
                         try
                         {
                             parameter.LoadValue(newStateId);
@@ -202,7 +210,7 @@ namespace Damdor.Statio
         {
             foreach (var parameter in parameters)
             {
-                parameter.Storage = storage;
+                if (parameter != null) parameter.Storage = storage;
             }
         }
         
@@ -229,6 +237,7 @@ namespace Damdor.Statio
             for (var index = 0; index < parameters.Count; index++)
             {
                 var parameter = parameters[index];
+                if (parameter == null) continue;
                 try
                 {
                     parameter.LoadValue(stateId);
@@ -245,6 +254,7 @@ namespace Damdor.Statio
             for (var index = 0; index < parameters.Count; index++)
             {
                 var parameter = parameters[index];
+                if (parameter == null) continue;
                 try
                 {
                     parameter.LoadValue(stateId, percentFromSnapshot);
