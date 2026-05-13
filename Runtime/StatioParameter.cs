@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Damdor.Foundation;
+using Damdor.Numerio;
 using Damdor.Vario;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -187,7 +187,7 @@ namespace Damdor.Statio
         protected abstract void SetValue(TComponent target, TValue value);
 
         protected virtual TValue Lerp(TValue a, TValue b, float t)
-            => NumericOperations.Get<TValue>().LerpUnclamped(a, b, t);
+            => Numerio.NumerioSettings.Get<TValue>().LerpUnclamped(a, b, t);
 
         private TComponent ResolveTarget()
         {
