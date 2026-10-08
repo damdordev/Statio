@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.edgeWidth through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/EdgeWidth")]
     public class UIEffectEdgeWidthStatioParameter : StatioParameter<UIEffect, float>

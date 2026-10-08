@@ -4,10 +4,16 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls VisualState.CurrentState through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("Statio/State")]
     public class StatioStatioParameter : StatioParameter<VisualState, string>
     {
+        /// <summary>
+        /// Gets or sets the evaluated interpolation threshold at which the snapshot switches to the destination. Defaults to 0.5.
+        /// </summary>
         public VarioValue<float> SwitchMoment
         {
             get => switchMoment;

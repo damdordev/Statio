@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls GameObject.activeSelf through visual state values. Keeps the target active while the interpolation factor is below 0.99 if either endpoint is active.
+    /// </summary>
     [Serializable]
     [StatioParameter("GameObject/Active")]
     public class GameObjectActivityStatioParameter : StatioParameter<GameObject, bool>

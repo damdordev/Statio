@@ -5,6 +5,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.transitionColor through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TransitionColor")]
     public class UIEffectTransitionColorStatioParameter : StatioParameter<UIEffect, Color>

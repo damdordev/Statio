@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.gradationRotation through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/GradationRotation")]
     public class UIEffectGradationRotationStatioParameter : StatioParameter<UIEffect, float>

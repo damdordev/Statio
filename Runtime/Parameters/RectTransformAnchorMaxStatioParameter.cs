@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls RectTransform.anchorMax through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("RectTransform/AnchorMax")]
     public class RectTransformAnchorMaxStatioParameter : StatioParameter<RectTransform, Vector2>

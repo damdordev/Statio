@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.patternArea through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/PatternArea")]
     public class UIEffectPatternAreaStatioParameter : StatioParameter<UIEffect, PatternArea>

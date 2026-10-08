@@ -25,7 +25,7 @@ namespace Damdor.Statio
         /// Applies an interpolated value between the saved snapshot and the target state value.
         /// </summary>
         /// <param name="stateId">The identifier of the target state.</param>
-        /// <param name="percentFromSnapshot">The interpolation factor (0.0 to 1.0), where 0 is the snapshot and 1 is the target state value.</param>
+        /// <param name="percentFromSnapshot">The eased interpolation factor, where 0 is the snapshot and 1 is the target state value. Easing may produce values outside this range.</param>
         void LoadValue(int stateId, float percentFromSnapshot);
         
         /// <summary>

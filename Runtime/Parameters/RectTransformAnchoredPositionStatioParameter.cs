@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls RectTransform.anchoredPosition through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("RectTransform/AnchoredPosition")]
     public class RectTransformAnchoredPositionStatioParameter : StatioParameter<RectTransform, Vector2>

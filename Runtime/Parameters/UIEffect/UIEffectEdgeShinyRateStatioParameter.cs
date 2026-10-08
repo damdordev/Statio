@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.edgeShinyRate through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/EdgeShinyRate")]
     public class UIEffectEdgeShinyRateStatioParameter : StatioParameter<UIEffect, float>

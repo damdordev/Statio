@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.shadowFade through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/ShadowFade")]
     public class UIEffectShadowFadeStatioParameter : StatioParameter<UIEffect, float>

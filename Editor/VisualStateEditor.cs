@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Damdor.Statio.Editor
 {
+    /// <summary>
+    /// Draws the VisualState Inspector for states, parameters, and animation rules.
+    /// </summary>
     [CustomEditor(typeof(VisualState), true)]
     public class VisualStateEditor : UnityEditor.Editor
     {
@@ -28,6 +31,9 @@ namespace Damdor.Statio.Editor
             EditorApplication.update -= EditorUpdate;
         }
 
+        /// <summary>
+        /// Draws and applies the custom Inspector settings.
+        /// </summary>
         public override void OnInspectorGUI()
         {
             serializedObject.Update();

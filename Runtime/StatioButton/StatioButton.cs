@@ -34,7 +34,7 @@ namespace Damdor.Statio
     
     /// <summary>
     /// A UI Button that integrates with a <see cref="VisualState"/> component to drive state transitions.
-    /// Instead of using fixed transitions like color tints or sprite swaps, it changes the state of a target <see cref="VisualState"/>.
+    /// It also calls the base Button transition, so configured Unity transitions can run alongside Statio state changes.
     /// </summary>
     [AddComponentMenu("UI/Statio Button", 31)]
     public class StatioButton : Button

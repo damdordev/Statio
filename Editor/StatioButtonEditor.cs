@@ -3,6 +3,9 @@ using UnityEditor.UI;
 
 namespace Damdor.Statio.Editor
 {
+    /// <summary>
+    /// Draws button interaction settings and Statio state mappings.
+    /// </summary>
     [CustomEditor(typeof(StatioButton), true)]
     [CanEditMultipleObjects]
     public class StatioButtonEditor : ButtonEditor
@@ -21,6 +24,9 @@ namespace Damdor.Statio.Editor
             onClickProperty = serializedObject.FindProperty("m_OnClick");
         }
 
+        /// <summary>
+        /// Draws and applies the custom Inspector settings.
+        /// </summary>
         public override void OnInspectorGUI()
         {
             serializedObject.Update();

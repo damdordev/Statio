@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls RectTransform.sizeDelta through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("RectTransform/Size Delta")]
     public class RectTransformSizeDeltaStatioParameter : StatioParameter<RectTransform, Vector2>

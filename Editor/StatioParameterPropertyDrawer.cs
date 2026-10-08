@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Damdor.Statio.Editor
 {
+    /// <summary>
+    /// Draws parameter targets, default values, and state overrides.
+    /// </summary>
     [CustomPropertyDrawer(typeof(StatioParameter))]
     public class StatioParameterPropertyDrawer : PropertyDrawer
     {
@@ -21,6 +24,12 @@ namespace Damdor.Statio.Editor
         private List<SerializedProperty> otherProperties = new();
         private VisualState state;
         
+        /// <summary>
+        /// Calculates the height required to draw the parameter.
+        /// </summary>
+        /// <param name="property">The serialized parameter.</param>
+        /// <param name="label">The property label.</param>
+        /// <returns>The required height in pixels.</returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             RetrieveProperties(property);
@@ -58,6 +67,12 @@ namespace Damdor.Statio.Editor
             return height;
         }
 
+        /// <summary>
+        /// Draws the serialized parameter and its state values.
+        /// </summary>
+        /// <param name="position">The drawing area.</param>
+        /// <param name="property">The serialized parameter.</param>
+        /// <param name="label">The property label.</param>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             RetrieveProperties(property);

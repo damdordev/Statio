@@ -4,10 +4,16 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls Transform.parent through visual state values. Reparents with worldPositionStays set to false and moves the target to the last sibling.
+    /// </summary>
     [Serializable]
     [StatioParameter("Transform/Parent")]
     public class TransformParentStatioParameter : StatioParameter<Transform, Transform>
     {
+        /// <summary>
+        /// Gets or sets the evaluated interpolation threshold at which the snapshot switches to the destination. Defaults to 0.5.
+        /// </summary>
         public VarioValue<float> SwitchMoment
         {
             get => switchMoment;

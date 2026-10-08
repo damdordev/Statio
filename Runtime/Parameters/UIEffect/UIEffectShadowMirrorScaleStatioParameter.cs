@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.shadowMirrorScale through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/ShadowMirrorScale")]
     public class UIEffectShadowMirrorScaleStatioParameter : StatioParameter<UIEffect, float>

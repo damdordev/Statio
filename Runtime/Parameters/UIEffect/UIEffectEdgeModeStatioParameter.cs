@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.edgeMode through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/EdgeMode")]
     public class UIEffectEdgeModeStatioParameter : StatioParameter<UIEffect, EdgeMode>

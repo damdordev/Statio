@@ -6,9 +6,18 @@ using Object = UnityEngine.Object;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Provides a common serializable base for Statio parameters.
+    /// </summary>
     [Serializable]
     public class StatioParameter {}
     
+    /// <summary>
+    /// Controls a Unity object property using a default value, state overrides, and transition snapshots.
+    /// </summary>
+    /// <typeparam name="TComponent">The Unity object type to control.</typeparam>
+    /// <typeparam name="TValue">The property value type.</typeparam>
+    /// <remarks>Targets and values are evaluated using the storage assigned through IStatioParameterLifecycle. Missing targets are skipped when loading values or saving snapshots.</remarks>
     [Serializable] 
     public abstract class StatioParameter<TComponent, TValue> : StatioParameter, IStatioParameterLifecycle, IStatioParameter<TComponent, TValue>
         where TComponent : Object
@@ -19,12 +28,14 @@ namespace Damdor.Statio
             set => storage = value;
         }
         
+        /// <inheritdoc/>
         public VarioValue<TComponent> Target
         {
             get => target;
             set => target = value;
         }
 
+        /// <inheritdoc/>
         public VarioValue<TValue> DefaultValue
         {
             get => defaultValue;
@@ -38,6 +49,7 @@ namespace Damdor.Statio
         private TValue snapshot;
         private Vario.VarioStorage storage;
 
+        /// <inheritdoc/>
         public void SetValue(int stateId, VarioValue<TValue> value)
         {
             for (var i = 0; i < values.Count; i++)
@@ -49,6 +61,7 @@ namespace Damdor.Statio
             values.Add(new VisualStateParameterValue<TValue> { stateId = stateId, value = value });
         }
 
+        /// <inheritdoc/>
         public VarioValue<TValue> GetValue(int stateId)
         {
             foreach (var value in values)
@@ -58,6 +71,7 @@ namespace Damdor.Statio
             return defaultValue;
         }
 
+        /// <inheritdoc/>
         public bool HasOverride(int stateId)
         {
             foreach (var value in values)
@@ -67,6 +81,7 @@ namespace Damdor.Statio
             return false;
         }
 
+        /// <inheritdoc/>
         public void RemoveOverride(int stateId)
         {
             values.RemoveAll(v => v.stateId == stateId);
@@ -182,9 +197,26 @@ namespace Damdor.Statio
             }
         }
 
+        /// <summary>
+        /// Reads the controlled property from the resolved target.
+        /// </summary>
+        /// <param name="target">The resolved Unity object.</param>
+        /// <returns>The current property value.</returns>
         protected abstract TValue GetValue(TComponent target);
+        /// <summary>
+        /// Writes the controlled property to the resolved target.
+        /// </summary>
+        /// <param name="target">The resolved Unity object.</param>
+        /// <param name="value">The property value to apply.</param>
         protected abstract void SetValue(TComponent target, TValue value);
 
+        /// <summary>
+        /// Interpolates through Vario numeric operations, or switches at 0.5 when none are registered.
+        /// </summary>
+        /// <param name="a">The saved snapshot value.</param>
+        /// <param name="b">The destination value.</param>
+        /// <param name="t">The eased interpolation factor, which may be outside the range zero to one.</param>
+        /// <returns>The interpolated or selected value.</returns>
         protected virtual TValue Lerp(TValue a, TValue b, float t)
         {
             var numericOperations = VarioSettings.GetNumericOperations<TValue>();
@@ -198,6 +230,12 @@ namespace Damdor.Statio
             return target.Evaluate(storage); 
         }
 
+        /// <summary>
+        /// Evaluates a Vario value using this parameter’s assigned storage.
+        /// </summary>
+        /// <typeparam name="T">The evaluated value type.</typeparam>
+        /// <param name="storageValue">The value expression to evaluate.</param>
+        /// <returns>The evaluated value.</returns>
         protected T ResolveValue<T>(VarioValue<T> storageValue)
         {
             return storageValue.Evaluate(storage);
@@ -206,9 +244,19 @@ namespace Damdor.Statio
     }
     
     [Serializable]
+    /// <summary>
+    /// Stores a value override associated with a state index.
+    /// </summary>
+    /// <typeparam name="TValue">The override value type.</typeparam>
     public struct VisualStateParameterValue<TValue>
     {
+        /// <summary>
+        /// The zero-based state index.
+        /// </summary>
         public int stateId;
+        /// <summary>
+        /// The value expression for this state.
+        /// </summary>
         public VarioValue<TValue> value;
     }
     

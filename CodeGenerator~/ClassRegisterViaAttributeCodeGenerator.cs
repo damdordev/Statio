@@ -7,17 +7,37 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Damdor.Statio.CodeGenerator;
 
+/// <summary>
+/// Provides source generation of Unity initialization methods that register attributed classes.
+/// </summary>
 public abstract class ClassRegisterViaAttributeCodeGenerator : ISourceGenerator
 {
+    /// <summary>
+    /// Gets the attribute names to collect, without the Attribute suffix.
+    /// </summary>
     public abstract string[] Attributes { get; } 
     
+    /// <summary>
+    /// Registers the attribute syntax receiver.
+    /// </summary>
+    /// <param name="context">The Roslyn initialization context.</param>
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver(Attributes));
     }
 
+    /// <summary>
+    /// Generates registration source for the current compilation.
+    /// </summary>
+    /// <param name="context">The Roslyn generation context.</param>
     public abstract void Execute(GeneratorExecutionContext context);
     
+    /// <summary>
+    /// Generates registration calls for concrete classes whose attributes pass semantic validation.
+    /// </summary>
+    /// <param name="context">The Roslyn generation context.</param>
+    /// <param name="attribute">The collected attribute name without the Attribute suffix.</param>
+    /// <param name="register">The callback that appends a registration statement for each fully qualified type name.</param>
     protected void GenerateForAttribute(
             GeneratorExecutionContext context, 
             string attribute, 

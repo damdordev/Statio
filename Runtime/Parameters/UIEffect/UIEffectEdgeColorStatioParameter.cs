@@ -5,6 +5,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.edgeColor through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/EdgeColor")]
     public class UIEffectEdgeColorStatioParameter : StatioParameter<UIEffect, Color>

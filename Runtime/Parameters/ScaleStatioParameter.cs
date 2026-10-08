@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls Transform.localScale through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("Transform/Scale")]
     public class ScaleStatioParameter : StatioParameter<Transform, Vector3>

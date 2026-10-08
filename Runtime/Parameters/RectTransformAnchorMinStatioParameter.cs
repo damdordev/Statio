@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls RectTransform.anchorMin through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("RectTransform/AnchorMin")]
     public class RectTransformAnchorMinStatioParameter : StatioParameter<RectTransform, Vector2>

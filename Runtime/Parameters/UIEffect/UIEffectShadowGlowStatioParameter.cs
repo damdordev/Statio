@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.shadowGlow through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/ShadowGlow")]
     public class UIEffectShadowGlowStatioParameter : StatioParameter<UIEffect, bool>

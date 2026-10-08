@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls RectTransform.pivot through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("RectTransform/Pivot")]
     public class RectTransformPivotStatioParameter : StatioParameter<RectTransform, Vector2>

@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls Graphic.raycastTarget through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("Graphic/Raycast Target")]
     public class GraphicRaycastTargetStatioParameter : StatioParameter<Graphic, bool>

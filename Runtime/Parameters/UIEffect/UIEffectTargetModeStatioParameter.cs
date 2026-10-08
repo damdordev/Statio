@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.targetMode through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TargetMode")]
     public class UIEffectTargetModeStatioParameter : StatioParameter<UIEffect, TargetMode>

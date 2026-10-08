@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls CanvasGroup.blocksRaycasts through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("CanvasGroup/Blocks Raycasts")]
     public class CanvasGroupBlocksRaycastsStatioParameter : StatioParameter<CanvasGroup, bool>

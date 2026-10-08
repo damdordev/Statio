@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls RectTransform.rect.width through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("RectTransform/Width")]
     public class RectTransformWidthStatioParameter : StatioParameter<RectTransform, float>

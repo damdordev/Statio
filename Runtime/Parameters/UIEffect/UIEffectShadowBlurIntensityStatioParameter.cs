@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.shadowBlurIntensity through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/ShadowBlurIntensity")]
     public class UIEffectShadowBlurIntensityStatioParameter : StatioParameter<UIEffect, float>

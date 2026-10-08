@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.transitionReverse through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TransitionReverse")]
     public class UIEffectTransitionReverseStatioParameter : StatioParameter<UIEffect, bool>

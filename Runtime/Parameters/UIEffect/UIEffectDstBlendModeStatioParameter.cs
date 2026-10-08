@@ -5,6 +5,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.dstBlendMode through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/DstBlendMode")]
     public class UIEffectDstBlendModeStatioParameter : StatioParameter<UIEffect, BlendMode>

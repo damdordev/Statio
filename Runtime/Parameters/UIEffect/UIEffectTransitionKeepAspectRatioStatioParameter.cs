@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.transitionKeepAspectRatio through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TransitionKeepAspectRatio")]
     public class UIEffectTransitionKeepAspectRatioStatioParameter : StatioParameter<UIEffect, bool>

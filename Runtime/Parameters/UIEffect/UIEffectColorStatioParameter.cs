@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.color through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/Color")]
     public class UIEffectColorStatioParameter : StatioParameter<UIEffect, Color>

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.transitionTextureOffset through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TransitionTextureOffset")]
     public class UIEffectTransitionTextureOffsetStatioParameter : StatioParameter<UIEffect, Vector2>

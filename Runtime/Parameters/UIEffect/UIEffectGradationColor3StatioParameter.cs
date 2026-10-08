@@ -5,6 +5,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.gradationColor3 through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/GradationColor3")]
     public class UIEffectGradationColor3StatioParameter : StatioParameter<UIEffect, Color>

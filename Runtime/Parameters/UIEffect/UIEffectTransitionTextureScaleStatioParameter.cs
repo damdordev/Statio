@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.transitionTextureScale through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TransitionTextureScale")]
     public class UIEffectTransitionTextureScaleStatioParameter : StatioParameter<UIEffect, Vector2>

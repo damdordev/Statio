@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls RectTransform.rect.height through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("RectTransform/Height")]
     public class RectTransformHeightStatioParameter : StatioParameter<RectTransform, float>

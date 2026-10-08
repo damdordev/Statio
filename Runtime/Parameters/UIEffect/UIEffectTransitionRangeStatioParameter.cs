@@ -5,6 +5,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.transitionRange through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TransitionRange")]
     public class UIEffectTransitionRangeStatioParameter : StatioParameter<UIEffect, MinMax01>

@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.targetSoftness through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TargetSoftness")]
     public class UIEffectTargetSoftnessStatioParameter : StatioParameter<UIEffect, float>

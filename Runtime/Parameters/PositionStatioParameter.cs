@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls local or world position, using local space by default.
+    /// </summary>
     [Serializable]
     [StatioParameter("Transform/Position")]
     public class PositionStatioParameter : StatioParameter<Transform, Vector3>

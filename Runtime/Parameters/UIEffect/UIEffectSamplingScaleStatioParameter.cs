@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.samplingScale through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/SamplingScale")]
     public class UIEffectSamplingScaleStatioParameter : StatioParameter<UIEffect, float>

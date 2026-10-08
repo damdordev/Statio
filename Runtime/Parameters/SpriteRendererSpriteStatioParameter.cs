@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls SpriteRenderer.sprite through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("SpriteRenderer/Sprite")]
     public class SpriteRendererSpriteStatioParameter : StatioParameter<SpriteRenderer, Sprite>

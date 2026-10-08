@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls CanvasGroup.alpha through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("CanvasGroup/Alpha")]
     public class CanvasGroupAlphaStatioParameter : StatioParameter<CanvasGroup, float>

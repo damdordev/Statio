@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.allowToModifyMeshShape through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/AllowToModifyMeshShape")]
     public class UIEffectAllowToModifyMeshShapeStatioParameter : StatioParameter<UIEffect, bool>

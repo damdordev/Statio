@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls CanvasGroup.interactable through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("CanvasGroup/Interactable")]
     public class CanvasGroupInteractableStatioParameter : StatioParameter<CanvasGroup, bool>

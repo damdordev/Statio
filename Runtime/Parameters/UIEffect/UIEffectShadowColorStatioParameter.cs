@@ -5,6 +5,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.shadowColor through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/ShadowColor")]
     public class UIEffectShadowColorStatioParameter : StatioParameter<UIEffect, Color>

@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls LayoutElement.preferredWidth through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("LayoutElement/Preferred Width")]
     public class LayoutElementPreferredWidthStatioParameter : StatioParameter<LayoutElement, float>

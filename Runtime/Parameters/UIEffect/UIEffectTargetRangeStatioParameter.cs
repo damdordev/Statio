@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.targetRange through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TargetRange")]
     public class UIEffectTargetRangeStatioParameter : StatioParameter<UIEffect, float>

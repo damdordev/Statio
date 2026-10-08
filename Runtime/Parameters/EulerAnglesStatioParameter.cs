@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls local or world Euler angles, using local space by default.
+    /// </summary>
     [Serializable]
     [StatioParameter("Transform/EulerAngles")]
     public class EulerAnglesStatioParameter : StatioParameter<Transform, Vector3>

@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls Graphic.color through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("Graphic/Color")]
     public class GraphicColorStatioParameter : StatioParameter<Graphic, Color>

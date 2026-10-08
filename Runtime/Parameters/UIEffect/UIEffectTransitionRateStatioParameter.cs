@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.transitionRate through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/TransitionRate")]
     public class UIEffectTransitionRateStatioParameter : StatioParameter<UIEffect, float>

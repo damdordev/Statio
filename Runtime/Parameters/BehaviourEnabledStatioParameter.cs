@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls Behaviour.enabled through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("Behaviour/Enabled")]
     public class BehaviourEnabledStatioParameter : StatioParameter<Behaviour, bool>

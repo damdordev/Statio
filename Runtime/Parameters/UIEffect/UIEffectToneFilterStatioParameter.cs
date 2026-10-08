@@ -4,6 +4,9 @@ using Coffee.UIEffects;
 
 namespace Damdor.Statio
 {
+    /// <summary>
+    /// Controls UIEffect.toneFilter through visual state values.
+    /// </summary>
     [Serializable]
     [StatioParameter("UIEffect/ToneFilter")]
     public class UIEffectToneFilterStatioParameter : StatioParameter<UIEffect, ToneFilter>
