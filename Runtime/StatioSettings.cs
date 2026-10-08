@@ -17,7 +17,7 @@ namespace Damdor.Statio
 
         private static readonly List<Type> supportedParameterTypes = new();
         private static readonly Dictionary<Type, string> parameterTypeToName = new();
-        private static bool logErrorsToConsole;
+        private static bool logErrorsToConsole = true; 
         private static StatioErrorHandler errorHandler;
 
         public static void RegisterErrorHandler(StatioErrorHandler handler)
@@ -27,6 +27,12 @@ namespace Damdor.Statio
 
         public static void RegisterParameterType(Type type, string name)
         {
+            if (supportedParameterTypes.Contains(type))
+            {
+                supportedParameterTypes.Remove(type);
+                parameterTypeToName.Remove(type);
+            }
+
             supportedParameterTypes.Add(type);
             parameterTypeToName.Add(type, name);
         }

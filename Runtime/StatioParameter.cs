@@ -186,7 +186,12 @@ namespace Damdor.Statio
         protected abstract void SetValue(TComponent target, TValue value);
 
         protected virtual TValue Lerp(TValue a, TValue b, float t)
-            => VarioSettings.GetNumericOperations<TValue>().LerpUnclamped(a, b, t);
+        {
+            var numericOperations = VarioSettings.GetNumericOperations<TValue>();
+            if (numericOperations == null) return t < 0.5f ? a : b;
+
+            return numericOperations.LerpUnclamped(a, b, t);
+        }
 
         private TComponent ResolveTarget()
         {

@@ -67,6 +67,7 @@ namespace Damdor.Statio
             }
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, initialStateId);
             currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, currentStateId);
+            animationProgress.TargetState = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, animationProgress.TargetState);
         }
 
         public void ChangeStateId(string state, int newStateId)
@@ -75,6 +76,12 @@ namespace Damdor.Statio
             if (oldStateId == -1)
             {
                 StatioSettings.NotifyError(this, $"Trying to move non-existing state: {state}");
+                return;
+            }
+            
+            if(newStateId < 0 || newStateId >= states.Count)
+            {
+                StatioSettings.NotifyError(this, $"Trying to move state to invalid index: {newStateId}");
                 return;
             }
 
@@ -87,6 +94,7 @@ namespace Damdor.Statio
             }
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, initialStateId);
             currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, currentStateId);
+            animationProgress.TargetState = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, animationProgress.TargetState);
         }
 
         public void AddParameter<TComponent, TValue>(StatioParameter<TComponent, TValue> parameter)

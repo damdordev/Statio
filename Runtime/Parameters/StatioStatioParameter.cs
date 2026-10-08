@@ -8,6 +8,12 @@ namespace Damdor.Statio
     [StatioParameter("Statio/State")]
     public class StatioStatioParameter : StatioParameter<VisualState, string>
     {
+        public VarioValue<float> SwitchMoment
+        {
+            get => switchMoment;
+            set => switchMoment = value;
+        }
+        
         protected override string GetValue(VisualState target) => target.CurrentState;
 
         protected override void SetValue(VisualState target, string value)
@@ -16,8 +22,10 @@ namespace Damdor.Statio
             else target.ChangeStateImmediately(value);
         }
         
-        protected override string Lerp(string a, string b, float t) => t >= 0.5f ? a : b;
+        protected override string Lerp(string a, string b, float t) => t >= switchMoment.Value ? a : b;
 
         [SerializeField] private VarioValue<bool> animate;
+        [SerializeField] private VarioValue<float> switchMoment = VarioValue<float>.Raw(0.5f);
+        
     }
 }

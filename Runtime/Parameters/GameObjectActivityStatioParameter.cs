@@ -15,5 +15,6 @@ namespace Damdor.Statio
             if((value1 || value2) && t < 0.99) return true;
             return base.Lerp(value1, value2, t);
         }
+        
     }
 }
