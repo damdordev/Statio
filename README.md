@@ -36,7 +36,7 @@ This package is currently under development. In the future, it will be available
 **Option B: Install via `manifest.json`**
 Open your project's `Packages/manifest.json` file and add the following line to your `"dependencies"` block:
 ```json
-"com.damdor.vario": "https://github.com/damdordev/Statio.git#1.0.0-preview"
+"com.damdor.statio": "https://github.com/damdordev/Statio.git#1.0.0-preview"
 ```
 ## Basic Usage
 
