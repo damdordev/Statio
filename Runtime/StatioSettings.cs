@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Damdor.Vario;
 using UnityEngine;
 
@@ -8,14 +7,7 @@ namespace Damdor.Statio
 {
     public static class StatioSettings
     {
-        public static IReadOnlyList<Type> SupportedParameterTypes
-        {
-            get
-            {
-                EnsureSupportedParametersListGenerated();
-                return supportedParameterTypes;
-            }
-        }
+        public static IReadOnlyList<Type> SupportedParameterTypes => supportedParameterTypes;
 
         public static bool LogErrorsToConsole
         {
@@ -23,8 +15,8 @@ namespace Damdor.Statio
             set => logErrorsToConsole = value;
         }
 
-        private static List<Type> supportedParameterTypes = null;
-        private static Dictionary<Type, string> parameterTypeToName = null;
+        private static readonly List<Type> supportedParameterTypes = new();
+        private static readonly Dictionary<Type, string> parameterTypeToName = new();
         private static bool logErrorsToConsole;
         private static StatioErrorHandler errorHandler;
 
@@ -32,32 +24,15 @@ namespace Damdor.Statio
         {
             errorHandler = handler;
         }
-        
-        private static void EnsureSupportedParametersListGenerated()
-        {
-            if (supportedParameterTypes != null) return;
 
-            supportedParameterTypes = new List<Type>();
-            parameterTypeToName = new Dictionary<Type, string>();
-            var baseType = typeof(StatioParameter);
-            
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if(type.IsInterface || type.IsAbstract || !type.IsSerializable || !baseType.IsAssignableFrom(type)) continue;
-                    var attr = type.GetCustomAttribute<StatioParameterAttribute>();
-                    if(attr == null) continue;
-                    
-                    supportedParameterTypes.Add(type);
-                    parameterTypeToName.Add(type, attr.Name);
-                }
-            }
+        public static void RegisterParameterType(Type type, string name)
+        {
+            supportedParameterTypes.Add(type);
+            parameterTypeToName.Add(type, name);
         }
         
         public static string GetParameterTypeName(Type type)
         {
-            EnsureSupportedParametersListGenerated();
             var name = parameterTypeToName.GetValueOrDefault(type, "");
             return name;
         }

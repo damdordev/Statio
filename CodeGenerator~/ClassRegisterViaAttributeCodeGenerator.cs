@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Damdor.Vario.CodeGenerator;
+namespace Damdor.Statio.CodeGenerator;
 
 public abstract class ClassRegisterViaAttributeCodeGenerator : ISourceGenerator
 {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Damdor.Vario.CodeGenerator;
+namespace Damdor.Statio.CodeGenerator;
 
 public class AttributeSyntaxReceiver : ISyntaxReceiver
 {
