@@ -22,7 +22,7 @@ namespace Damdor.Statio
             target.SetAsLastSibling();
         }
 
-        protected override Transform Lerp(Transform a, Transform b, float t) => t >= 0.5f ? a : b;
+        protected override Transform Lerp(Transform a, Transform b, float t) => t < ResolveValue(switchMoment) ? a : b;
         [SerializeField] private VarioValue<float> switchMoment = VarioValue<float>.Raw(0.5f);
     }
 }

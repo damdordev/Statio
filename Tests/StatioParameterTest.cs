@@ -68,7 +68,7 @@ namespace Damdor.Statio.Tests
         }
 
         [Test]
-        [TestCase(-1, -50)]
+        [TestCase(-1, 0)]
         [TestCase(0, 50)]
         [TestCase(0.5f, 75)]
         [TestCase(1f, 100)]
@@ -82,8 +82,8 @@ namespace Damdor.Statio.Tests
             
             parameter.DefaultValue = new VarioValue<int> { Value = 100, Source = ValueSource.Raw };
             
-            lifecycle.LoadValue(0, 0.5f);
-            Assert.AreEqual(75, component.Value);
+            lifecycle.LoadValue(0, t);
+            Assert.AreEqual(expectedValue, component.Value);
         }
 
         [Test]

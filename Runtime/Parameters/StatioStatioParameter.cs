@@ -22,7 +22,7 @@ namespace Damdor.Statio
             else target.ChangeStateImmediately(value);
         }
         
-        protected override string Lerp(string a, string b, float t) => t >= switchMoment.Value ? a : b;
+        protected override string Lerp(string a, string b, float t) => t < ResolveValue(switchMoment) ? a : b;
 
         [SerializeField] private VarioValue<bool> animate;
         [SerializeField] private VarioValue<float> switchMoment = VarioValue<float>.Raw(0.5f);

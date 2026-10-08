@@ -5,9 +5,12 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Statio",
-        "Vario"
+        "Vario",
+        "UnityEngine.UI"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

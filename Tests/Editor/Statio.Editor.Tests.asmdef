@@ -1,0 +1,10 @@
+{
+    "name": "Statio.Editor.Tests",
+    "rootNamespace": "Damdor.Statio.Tests",
+    "references": ["Statio", "Statio.Editor", "Statio.Tests", "Vario", "UnityEngine.UI", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+    "includePlatforms": ["Editor"],
+    "overrideReferences": true,
+    "precompiledReferences": ["nunit.framework.dll"],
+    "autoReferenced": false,
+    "defineConstraints": ["UNITY_INCLUDE_TESTS"]
+}

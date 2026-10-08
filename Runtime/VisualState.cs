@@ -68,6 +68,7 @@ namespace Damdor.Statio
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, initialStateId);
             currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, currentStateId);
             animationProgress.TargetState = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, animationProgress.TargetState);
+            stateIdToSetAfterEnable = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, stateIdToSetAfterEnable);
         }
 
         public void ChangeStateId(string state, int newStateId)
@@ -95,6 +96,7 @@ namespace Damdor.Statio
             initialStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, initialStateId);
             currentStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, currentStateId);
             animationProgress.TargetState = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, animationProgress.TargetState);
+            stateIdToSetAfterEnable = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, stateIdToSetAfterEnable);
         }
 
         public void AddParameter<TComponent, TValue>(StatioParameter<TComponent, TValue> parameter)
@@ -105,26 +107,30 @@ namespace Damdor.Statio
         
         public void ChangeState(string state)
         {
-            var stateID = states.IndexOf(state);
-            if (stateID == -1)
-            {
-                StatioSettings.NotifyError(this, $"Trying to change to non existing state: {state}");
-            }
+            var stateId = GetStateId(state);
+            if (stateId == -1) return;
 
-            ChangeState(GetStateId(state), true);
+            ChangeState(stateId, true);
         }
         
         public void ChangeStateImmediately(string state)
         {
-            ChangeState(GetStateId(state), false);
+            var stateId = GetStateId(state);
+            if (stateId == -1) return;
+            
+            ChangeState(stateId, false);
         }
 
         public void ChangeState(int newStateId, bool animate)
         {
             AssignStoragesToParameters();
-            
-            if (newStateId == -1) return;
-            if (newStateId == currentStateId) return;
+
+            if (newStateId < 0 || newStateId >= states.Count)
+            {
+                StatioSettings.NotifyError(this, $"Trying to change to non existing state: {newStateId}");
+                return;
+            }
+            if (newStateId == currentStateId && !(animationProgress.Running && !animate)) return;
 
             if (isActiveAndEnabled)
             {
