@@ -12,7 +12,6 @@
     "url": "https://github.com/damdordev/Statio.git"
   },
   "dependencies": {
-    "com.damdor.vario": "1.0.0",
-    "com.damdor.numerio": "1.0.0"
+    "com.damdor.vario": "1.0.0"
   }
 }

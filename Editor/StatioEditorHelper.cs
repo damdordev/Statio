@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Damdor.Foundation.Editor;
+using Damdor.Vario.Editor;
 using UnityEditor;
 using UnityEngine;
 

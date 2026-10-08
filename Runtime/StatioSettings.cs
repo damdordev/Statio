@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Damdor.Foundation;
+using Damdor.Vario;
 using UnityEngine;
 
 namespace Damdor.Statio
