@@ -18,15 +18,10 @@ namespace Damdor.Statio
         /// <summary>
         /// Gets or sets whether errors are logged to the Unity console. Enabled by default.
         /// </summary>
-        public static bool LogErrorsToConsole
-        {
-            get => logErrorsToConsole;
-            set => logErrorsToConsole = value;
-        }
+        public static bool LogErrorsToConsole { get; set; } = true;
 
         private static readonly List<Type> supportedParameterTypes = new();
         private static readonly Dictionary<Type, string> parameterTypeToName = new();
-        private static bool logErrorsToConsole = true; 
         private static StatioErrorHandler errorHandler;
 
         /// <summary>
@@ -66,15 +61,16 @@ namespace Damdor.Statio
             return name;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         internal static void NotifyError(VisualState visualState, string error)
         {
-            if (logErrorsToConsole)
+            if (LogErrorsToConsole)
             {
-                var path = visualState == null ? null : visualState.transform.GetFullPath();
+                var path = !visualState ? null : visualState.transform.GetFullPath();
                 Debug.LogError($"Visual state error [{path}]: {error}");
             }
 
-            if (errorHandler != null) errorHandler(visualState, error);
+            errorHandler?.Invoke(visualState, error);
         }
         
     }

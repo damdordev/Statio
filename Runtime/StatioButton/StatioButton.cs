@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Damdor.Statio
@@ -48,33 +47,23 @@ namespace Damdor.Statio
             if (visualState == null || visualState.visualState == null)
                 return;
 
-            string targetState = null;
-
-            switch (state)
+            var targetState = state switch
             {
-                case SelectionState.Normal:
-                case SelectionState.Highlighted:
-                case SelectionState.Selected:
-                    targetState = visualState.NormalState;
-                    break;
-                case SelectionState.Pressed:
-                    targetState = visualState.PressedState;
-                    break;
-                case SelectionState.Disabled:
-                    targetState = visualState.DisabledState;
-                    break;
+                SelectionState.Normal or SelectionState.Highlighted or SelectionState.Selected => visualState
+                    .NormalState,
+                SelectionState.Pressed => visualState.PressedState,
+                SelectionState.Disabled => visualState.DisabledState,
+                _ => null
+            };
+
+            if (string.IsNullOrEmpty(targetState)) return;
+            if (instant)
+            {
+                visualState.visualState.ChangeStateImmediately(targetState);
             }
-
-            if (!string.IsNullOrEmpty(targetState))
+            else
             {
-                if (instant)
-                {
-                    visualState.visualState.ChangeStateImmediately(targetState);
-                }
-                else
-                {
-                    visualState.visualState.ChangeState(targetState);
-                }
+                visualState.visualState.ChangeState(targetState);
             }
         }
     }

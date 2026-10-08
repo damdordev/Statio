@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ namespace Damdor.Statio.Editor
         private SerializedProperty targetProperty;
         private SerializedProperty defaultValueProperty;
         private SerializedProperty valuesProperty;
-        private List<SerializedProperty> otherProperties = new();
+        private readonly List<SerializedProperty> otherProperties = new();
         private VisualState state;
         
         /// <summary>
@@ -35,33 +34,31 @@ namespace Damdor.Statio.Editor
             RetrieveProperties(property);
             var height = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-            if (property.isExpanded)
+            if (!property.isExpanded) return height;
+            height += EditorGUI.GetPropertyHeight(defaultValueProperty);
+            height += EditorGUIUtility.standardVerticalSpacing;
+
+            for (var i = 0; i < valuesProperty.arraySize; ++i)
             {
-                height += EditorGUI.GetPropertyHeight(defaultValueProperty);
+                height += Mathf.Max(
+                    EditorGUI.GetPropertyHeight(valuesProperty.GetArrayElementAtIndex(i).FindPropertyRelative("value")),
+                    EditorGUIUtility.singleLineHeight
+                );
                 height += EditorGUIUtility.standardVerticalSpacing;
+            }
 
-                for (var i = 0; i < valuesProperty.arraySize; ++i)
-                {
-                    height += Mathf.Max(
-                        EditorGUI.GetPropertyHeight(valuesProperty.GetArrayElementAtIndex(i).FindPropertyRelative("value")),
-                        EditorGUIUtility.singleLineHeight
-                    );
-                    height += EditorGUIUtility.standardVerticalSpacing;
-                }
+            height += Mathf.Max(0, state.States.Count - valuesProperty.arraySize) *
+                      (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
 
-                height += Mathf.Max(0, state.States.Count - valuesProperty.arraySize) *
-                          (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
-
-                if (otherProperties.Count > 0)
-                {
-                    height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                }
+            if (otherProperties.Count > 0)
+            {
+                height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            }
                 
-                foreach (var childProperty in otherProperties)
-                {
-                    height += EditorGUI.GetPropertyHeight(childProperty);
-                    height +=  EditorGUIUtility.standardVerticalSpacing;
-                }
+            foreach (var childProperty in otherProperties)
+            {
+                height += EditorGUI.GetPropertyHeight(childProperty);
+                height +=  EditorGUIUtility.standardVerticalSpacing;
             }
 
             return height;
@@ -113,7 +110,7 @@ namespace Damdor.Statio.Editor
 
                 if (otherProperties.Count > 0)
                 {
-                    var rectHeight = otherProperties.Sum(EditorGUI.GetPropertyHeight) + otherProperties.Count * EditorGUIUtility.standardVerticalSpacing;
+                    // _ = otherProperties.Sum(EditorGUI.GetPropertyHeight) + otherProperties.Count * EditorGUIUtility.standardVerticalSpacing;
                     EditorGUI.DrawRect(
                         new Rect(position.x, y, position.width, 2),
                         new Color(0f, 0f, 0f, 1f)
@@ -212,7 +209,8 @@ namespace Damdor.Statio.Editor
             do
             {
                 if (!copy.propertyPath.StartsWith(property.propertyPath)) break;
-                if(copy.name == TargetPropertyName || copy.name == DefaultValuePropertyName || copy.name == ValuesPropertyName) continue;
+                // ReSharper disable once MergeIntoLogicalPattern
+                if(copy.name is TargetPropertyName or DefaultValuePropertyName || copy.name == ValuesPropertyName) continue;
                 otherProperties.Add(copy.Copy());
             } while (copy.NextVisible(false));
         }
@@ -220,7 +218,7 @@ namespace Damdor.Statio.Editor
         private float ShowState(Rect rect, SerializedProperty valuesProperty, int stateIndex, IStatioParameterLifecycle parameter)
         {
             SerializedProperty valueProperty = null;
-            int valuePropertyIndex = 0;
+            var valuePropertyIndex = 0;
             var height = EditorGUIUtility.singleLineHeight;
             
             for (var index = 0; index < valuesProperty.arraySize; ++index)
@@ -228,11 +226,9 @@ namespace Damdor.Statio.Editor
                 var property = valuesProperty.GetArrayElementAtIndex(index);
                 var stateIdProperty = property.FindPropertyRelative("stateId");
                 var thisStateIndex = stateIdProperty.intValue;
-                if (thisStateIndex == stateIndex)
-                {
-                    valueProperty = property.FindPropertyRelative("value");
-                    valuePropertyIndex = index;
-                }
+                if (thisStateIndex != stateIndex) continue;
+                valueProperty = property.FindPropertyRelative("value");
+                valuePropertyIndex = index;
             }
 
             var hasProperty = valueProperty != null;
@@ -281,16 +277,18 @@ namespace Damdor.Statio.Editor
                 height = Mathf.Max(height, EditorGUI.GetPropertyHeight(valueProperty));
             }
 
-            if (hasProperty && !shouldHaveProperty)
+            switch (hasProperty)
             {
-                valuesProperty.DeleteArrayElementAtIndex(valuePropertyIndex);
-            }
-
-            if (!hasProperty && shouldHaveProperty)
-            {
-                var newIndex = valuesProperty.arraySize;
-                valuesProperty.InsertArrayElementAtIndex(newIndex);
-                valuesProperty.GetArrayElementAtIndex(newIndex).FindPropertyRelative("stateId").intValue = stateIndex;
+                case true when !shouldHaveProperty:
+                    valuesProperty.DeleteArrayElementAtIndex(valuePropertyIndex);
+                    break;
+                case false when shouldHaveProperty:
+                {
+                    var newIndex = valuesProperty.arraySize;
+                    valuesProperty.InsertArrayElementAtIndex(newIndex);
+                    valuesProperty.GetArrayElementAtIndex(newIndex).FindPropertyRelative("stateId").intValue = stateIndex;
+                    break;
+                }
             }
 
             return height;

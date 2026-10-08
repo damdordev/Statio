@@ -1,5 +1,6 @@
 using Damdor.Vario;
 using UnityEngine;
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace Damdor.Statio
 {

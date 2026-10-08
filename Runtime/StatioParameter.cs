@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Damdor.Vario;
 using UnityEngine;
 using Object = UnityEngine.Object;
+// ReSharper disable Unity.PerformanceCriticalCodeNullComparison
 
 namespace Damdor.Statio
 {
@@ -22,7 +23,7 @@ namespace Damdor.Statio
     public abstract class StatioParameter<TComponent, TValue> : StatioParameter, IStatioParameterLifecycle, IStatioParameter<TComponent, TValue>
         where TComponent : Object
     {
-        Vario.VarioStorage IStatioParameterLifecycle.Storage
+        VarioStorage IStatioParameterLifecycle.Storage
         {
             get => storage;
             set => storage = value;
@@ -47,7 +48,7 @@ namespace Damdor.Statio
         [SerializeField] private List<VisualStateParameterValue<TValue>> values = new();
 
         private TValue snapshot;
-        private Vario.VarioStorage storage;
+        private VarioStorage storage;
 
         /// <inheritdoc/>
         public void SetValue(int stateId, VarioValue<TValue> value)
@@ -90,40 +91,32 @@ namespace Damdor.Statio
         void IStatioParameterLifecycle.SaveSnapshot()
         {
             var component = ResolveTarget();
-            if (component != null)
-            {
-                snapshot = GetValue(component);
-            }
+            if (component == null) return;
+            snapshot = GetValue(component);
         }
 
         void IStatioParameterLifecycle.LoadDefaultValue()
         {
             var component = ResolveTarget();
-            if (component != null)
-            {
-                var val = ResolveValue(defaultValue);
-                SetValue(component, val);
-            }
+            if (component == null) return;
+            var val = ResolveValue(defaultValue);
+            SetValue(component, val);
         }
         
         void IStatioParameterLifecycle.LoadValue(int stateId)
         {
             var component = ResolveTarget();
-            if (component != null)
-            {
-                var val = ResolveValue(GetValue(stateId));
-                SetValue(component, val);
-            }
+            if (component == null) return;
+            var val = ResolveValue(GetValue(stateId));
+            SetValue(component, val);
         }
 
         void IStatioParameterLifecycle.LoadValue(int stateId, float percentFromSnapshot)
         {
             var component = ResolveTarget();
-            if (component != null)
-            {
-                var targetVal = ResolveValue(GetValue(stateId));
-                SetValue(component, Lerp(snapshot, targetVal, percentFromSnapshot));
-            }
+            if (component == null) return;
+            var targetVal = ResolveValue(GetValue(stateId));
+            SetValue(component, Lerp(snapshot, targetVal, percentFromSnapshot));
         }
 
         void IStatioParameterLifecycle.SaveCurrentValueToDefaultValue()
@@ -152,7 +145,7 @@ namespace Damdor.Statio
                 var visualStateParameterValue = values[index];
                 if (visualStateParameterValue.stateId > stateId)
                 {
-                    values[index] = new VisualStateParameterValue<TValue>()
+                    values[index] = new VisualStateParameterValue<TValue>
                     {
                         stateId = visualStateParameterValue.stateId - 1,
                         value = visualStateParameterValue.value
@@ -243,17 +236,18 @@ namespace Damdor.Statio
         
     }
     
-    [Serializable]
     /// <summary>
     /// Stores a value override associated with a state index.
     /// </summary>
     /// <typeparam name="TValue">The override value type.</typeparam>
+    [Serializable]
     public struct VisualStateParameterValue<TValue>
     {
         /// <summary>
         /// The zero-based state index.
         /// </summary>
         public int stateId;
+      
         /// <summary>
         /// The value expression for this state.
         /// </summary>

@@ -119,18 +119,16 @@ namespace Damdor.Statio.Editor
                     oldValue
                 );
                 if (oldValue == newValue) return;
-                
-                if (!StatioEditorHelper.HasState(property, newValue))
-                {
-                    elementProperty.stringValue = newValue;
-                    property.serializedObject.ApplyModifiedProperties();
-                }
+
+                if (StatioEditorHelper.HasState(property, newValue)) return;
+                elementProperty.stringValue = newValue;
+                property.serializedObject.ApplyModifiedProperties();
             };
 
             reorderableList.elementHeightCallback += index
                 => EditorGUI.GetPropertyHeight(property.GetArrayElementAtIndex(index));
 
-            reorderableList.onAddDropdownCallback += (rect, _) =>
+            reorderableList.onAddDropdownCallback += (_, _) =>
             {
                 var newIndex = property.arraySize;
                 property.InsertArrayElementAtIndex(newIndex);
@@ -138,9 +136,9 @@ namespace Damdor.Statio.Editor
                 property.serializedObject.ApplyModifiedProperties();
             };
 
-            reorderableList.onReorderCallbackWithDetails += (l, oldIndex, newIndex) =>
+            reorderableList.onReorderCallbackWithDetails += (_, oldIndex, newIndex) =>
             {
-                Undo.RecordObject(property.serializedObject.targetObject, $"Reorder state");
+                Undo.RecordObject(property.serializedObject.targetObject, "Reorder state");
                 visualState.ChangeStateId(visualState.States[oldIndex], newIndex);
                 EditorUtility.SetDirty(property.serializedObject.targetObject);
                 property.serializedObject.Update();
@@ -149,7 +147,7 @@ namespace Damdor.Statio.Editor
 
             reorderableList.onRemoveCallback += l =>
             {
-                Undo.RecordObject(property.serializedObject.targetObject, $"Remove state");
+                Undo.RecordObject(property.serializedObject.targetObject, "Remove state");
                 visualState.RemoveState(visualState.States[l.index]);
                 EditorUtility.SetDirty(property.serializedObject.targetObject);
                 property.serializedObject.Update();
@@ -272,7 +270,7 @@ namespace Damdor.Statio.Editor
                 EditorGUI.PropertyField(easingRect, easingProperty);
             };
 
-            reorderableList.onAddDropdownCallback += (rect, _) =>
+            reorderableList.onAddDropdownCallback += (_, _) =>
             {
                 var index = property.arraySize;
                 property.InsertArrayElementAtIndex(index);

@@ -1,6 +1,7 @@
 using System;
 using Damdor.Vario;
 using UnityEngine;
+// ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
 namespace Damdor.Statio
 {

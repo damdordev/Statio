@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Damdor.Vario;
 using Object = UnityEngine.Object;
+// ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
 namespace Damdor.Statio
 {
     /// <summary>
     /// Controls named visual states and animates configured parameters between them.
     /// </summary>
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class VisualState : MonoBehaviour, IVarioStorageSource
     {
         /// <summary>
@@ -61,6 +63,7 @@ namespace Damdor.Statio
         /// <param name="state">The case-sensitive state name.</param>
         /// <returns>Index of the new added state</returns>
         /// <remarks>Empty or duplicate names are reported through StatioSettings and ignored.</remarks>
+        // ReSharper disable once UnusedMethodReturnValue.Global
         public int AddState(string state)
         {
             if (string.IsNullOrEmpty(state))
@@ -92,9 +95,9 @@ namespace Damdor.Statio
             }
             states.RemoveAt(removedStateId);
             
-            foreach (var parameter in parameters) 
+            foreach (var parameter in parameters)
             {
-                if (parameter != null) parameter.NotifyStateRemoved(removedStateId);
+                parameter?.NotifyStateRemoved(removedStateId);
             }
 
             for (var index = 0; index < animations.Count; index++)
@@ -104,7 +107,7 @@ namespace Damdor.Statio
                     Duration = animations[index].Duration,
                     Easing = animations[index].Easing,
                     InitialStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, animations[index].InitialStateId),
-                    TargetStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, animations[index].TargetStateId),
+                    TargetStateId = StatioInternalHelper.RecalculateStateIdAfterStateRemoved(removedStateId, animations[index].TargetStateId)
                 };
             }
 
@@ -138,9 +141,9 @@ namespace Damdor.Statio
             states.RemoveAt(oldStateId);
             states.Insert(newStateId, state);
             
-            foreach (var parameter in parameters) 
+            foreach (var parameter in parameters)
             {
-                if (parameter != null) parameter.NotifyStateChanged(oldStateId, newStateId);
+                parameter?.NotifyStateChanged(oldStateId, newStateId);
             }
             
             for (var index = 0; index < animations.Count; index++)
@@ -150,7 +153,7 @@ namespace Damdor.Statio
                     Duration = animations[index].Duration,
                     Easing = animations[index].Easing,
                     InitialStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, animations[index].InitialStateId),
-                    TargetStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, animations[index].TargetStateId),
+                    TargetStateId = StatioInternalHelper.RecalculateStateIdAfterStateIdChanged(oldStateId, newStateId, animations[index].TargetStateId)
                 };
             }
             
@@ -218,10 +221,10 @@ namespace Damdor.Statio
 
             if (isActiveAndEnabled)
             {
-                var animation = GetAnimation(currentStateId, newStateId);
+                var anim = GetAnimation(currentStateId, newStateId);
                 currentStateId = newStateId;
 
-                var time = animation.Duration.Evaluate(storage);
+                var time = anim.Duration.Evaluate(storage);
                 if (time <= 0f) animate = false;
                 
                 if (animate)
@@ -232,7 +235,7 @@ namespace Damdor.Statio
                         CurrentTime = 0f,
                         FullTime = time,
                         TargetState = newStateId,
-                        Easing = animation.Easing.Evaluate(storage)
+                        Easing = anim.Easing.Evaluate(storage)
                     };
 
                     for (var index = 0; index < parameters.Count; index++)
@@ -392,7 +395,7 @@ namespace Damdor.Statio
             return new StatioAnimation();
         }
 
-        private bool AcceptState(int state, int condition) => condition == -1 || state == condition;
+        private static bool AcceptState(int state, int condition) => condition == -1 || state == condition;
 
         private int GetStateId(string state)
         {
